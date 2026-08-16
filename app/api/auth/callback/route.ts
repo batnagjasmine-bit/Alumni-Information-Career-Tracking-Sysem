@@ -32,8 +32,14 @@ export async function GET(request: Request) {
             employer: "/employer/jobs",
           };
           
-          // 2. Append ?verified=true so the UI can show a toast
-          const targetUrl = new URL(`${origin}${roleRedirects[profile.role] ?? next}`);
+          // 2. If 'next' is explicitly provided (e.g. /reset-password) and not root, prioritize it
+          let finalPath = roleRedirects[profile.role] ?? "/";
+          if (next && next !== "/") {
+            finalPath = next;
+          }
+          
+          // 3. Append ?verified=true so the UI can show a toast
+          const targetUrl = new URL(`${origin}${finalPath}`);
           targetUrl.searchParams.set("verified", "true");
           
           return NextResponse.redirect(targetUrl.href);

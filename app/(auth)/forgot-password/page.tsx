@@ -22,8 +22,9 @@ export default function ForgotPasswordPage() {
   });
 
   const onSubmit = async ({ email }: ForgotPasswordInput) => {
+    const origin = typeof window !== "undefined" ? window.location.origin : process.env.NEXT_PUBLIC_APP_URL || "";
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback?next=/reset-password`,
+      redirectTo: `${origin}/api/auth/callback?next=/reset-password`,
     });
     if (error) { toast.error(error.message); return; }
     setSent(true);
