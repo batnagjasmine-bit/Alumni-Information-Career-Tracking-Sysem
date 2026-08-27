@@ -43,7 +43,7 @@ export default function EmployerAnnouncementsPage() {
     setLoading(true);
     const params = new URLSearchParams({ page: String(page) });
     if (category) params.set("category", category);
-    const res = await fetch(`/api/alumni/announcements?${params}`);
+    const res = await fetch(`/api/announcements?${params}`);
     const { data, count } = await res.json();
     setAnnouncements(data ?? []);
     setTotal(count ?? 0);

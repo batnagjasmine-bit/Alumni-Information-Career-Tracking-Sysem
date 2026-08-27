@@ -2,6 +2,7 @@
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 import { logAudit, AUDIT_ACTIONS } from "@/lib/utils/audit";
 import { z } from "zod";
 
@@ -26,16 +27,33 @@ export async function GET() {
     if (profile?.role !== "admin") return Response.json({ error: "Forbidden" }, { status: 403 });
 
     const adminClient = createAdminClient();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const db = adminClient as any;
 
-    const { data, error } = await db
-      .from("announcements")
-      .select("id, title, category, is_published, is_pinned, published_at, expires_at, created_at, profiles(full_name)")
-      .order("is_pinned", { ascending: false })
-      .order("created_at", { ascending: false });
+    const announcements = await prisma.announcement.findMany({
+      select: {
+        id: true,
+        title: true,
+        category: true,
+        is_published: true,
+        is_pinned: true,
+        published_at: true,
+        expires_at: true,
+        created_at: true,
+        admin: {
+          select: { full_name: true }
+        }
+      },
+      orderBy: [
+        { is_pinned: 'desc' },
+        { created_at: 'desc' }
+      ]
+    });
 
-    if (error) throw error;
+    // Map Prisma's 'admin' relation to 'profiles' to match frontend
+    const data = announcements.map(ann => ({
+      ...ann,
+      profiles: ann.admin
+    }));
+
     return Response.json({ data });
   } catch (error) {
     console.error("[GET /api/admin/announcements]", error);
@@ -81,14 +99,14 @@ export async function POST(request: NextRequest) {
     if (insertErr) throw insertErr;
 
     if (d.is_published) {
-      const { data: allAlumni } = await db.from("profiles").select("id").eq("role", "alumni");
-      if (allAlumni && allAlumni.length > 0) {
-        const notifications = allAlumni.map((a: { id: string }) => ({
-          user_id: a.id,
+      const { data: users } = await db.from("profiles").select("id, role").in("role", ["alumni", "employer"]);
+      if (users && users.length > 0) {
+        const notifications = users.map((u: { id: string, role: string }) => ({
+          user_id: u.id,
           title: `New Announcement: ${d.title}`,
           message: d.content.slice(0, 120) + (d.content.length > 120 ? "..." : ""),
           type: "announcement",
-          action_url: "/alumni/announcements",
+          action_url: `/${u.role}/announcements`,
         }));
         for (let i = 0; i < notifications.length; i += 500) {
           await db.from("notifications").insert(notifications.slice(i, i + 500));

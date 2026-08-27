@@ -20,7 +20,7 @@ export function AnnouncementPopup() {
   useEffect(() => {
     async function fetchLatestAnnouncement() {
       try {
-        const res = await fetch("/api/alumni/announcements?page=1");
+        const res = await fetch("/api/announcements?page=1");
         if (!res.ok) return;
         const { data } = await res.json();
         
