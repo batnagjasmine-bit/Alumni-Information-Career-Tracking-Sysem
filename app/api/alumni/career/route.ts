@@ -5,7 +5,7 @@ import { careerRecordSchema } from "@/lib/validations/career.schema";
 import { logAudit, AUDIT_ACTIONS } from "@/lib/utils/audit";
 
 // GET /api/alumni/career — fetch own career records
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
     const { data: { user }, error: authErr } = await supabase.auth.getUser();
