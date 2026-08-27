@@ -11,11 +11,15 @@ export async function GET() {
     const { data: { user }, error: authErr } = await supabase.auth.getUser();
     if (authErr || !user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
+    const { searchParams } = new URL(request.url);
+    const isArchived = searchParams.get("archived") === "true";
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await (supabase as any)
       .from("career_records")
-      .select("id, employment_status, employer_name, job_title, industry, employment_type, salary_range, start_date, end_date, is_current, country, city, job_description, created_at")
+      .select("id, employment_status, employer_name, job_title, industry, employment_type, salary_range, start_date, end_date, is_current, country, city, job_description, created_at, is_archived, archived_at")
       .eq("alumni_id", user.id)
+      .eq("is_archived", isArchived)
       .order("start_date", { ascending: false });
 
     if (error) throw error;

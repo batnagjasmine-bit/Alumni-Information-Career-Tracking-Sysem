@@ -159,51 +159,20 @@ export async function DELETE(
 
     const adminClient = createAdminClient();
 
-    // Log audit before we delete the record
+    // Log audit before we soft-delete the record
     await logAudit({
       userId: user.id,
       action: "DELETE_USER" as any, // fallback if AUDIT_ACTIONS doesn't have it
       tableName: "profiles",
       recordId: id,
-      newValues: { role: "employer", deleted: true },
+      newValues: { role: "employer", is_active: false },
     });
 
-    // 1. Delete from Prisma using interactive transaction with Prisma client methods
-    await prisma.$transaction(async (tx) => {
-      // Delete child records explicitly to handle relations safely
-      await tx.auditLog.deleteMany({ where: { user_id: id } });
-      await tx.notification.deleteMany({ where: { user_id: id } });
-      await tx.message.deleteMany({ where: { sender_id: id } });
-      await tx.conversation.deleteMany({
-        where: { OR: [{ user1_id: id }, { user2_id: id }] },
-      });
-
-      // Get all job postings for this employer to delete their applications
-      const employerJobs = await tx.jobPosting.findMany({
-        where: { employer_id: id },
-        select: { id: true },
-      });
-      const jobIds = employerJobs.map(j => j.id);
-      
-      if (jobIds.length > 0) {
-        await tx.jobApplication.deleteMany({
-          where: { job_id: { in: jobIds } },
-        });
-      }
-      
-      await tx.jobPosting.deleteMany({ where: { employer_id: id } });
-
-      // Delete specific profile types
-      await tx.alumni.deleteMany({ where: { id } });
-      await tx.employer.deleteMany({ where: { id } });
-
-      // Finally, delete the root profile
-      await tx.profile.deleteMany({ where: { id } });
+    // 1. Soft delete by updating is_active to false
+    await prisma.profile.update({
+      where: { id },
+      data: { is_active: false }
     });
-
-    // 2. Delete from Supabase Auth (purges the actual user login)
-    const { error: deleteErr } = await adminClient.auth.admin.deleteUser(id);
-    if (deleteErr) throw deleteErr;
 
     return Response.json({ data: { success: true } });
   } catch (error) {

@@ -81,10 +81,14 @@ export async function DELETE(
     if (!existing) return Response.json({ error: "Not found" }, { status: 404 });
     if (existing.alumni_id !== user.id) return Response.json({ error: "Forbidden" }, { status: 403 });
 
-    const { error } = await db.from("career_records").delete().eq("id", id);
+    const { error } = await db.from("career_records").update({
+      is_archived: true,
+      archived_at: new Date().toISOString(),
+      is_current: false
+    }).eq("id", id);
     if (error) throw error;
 
-    await logAudit({ userId: user.id, action: AUDIT_ACTIONS.DELETE_CAREER_RECORD, tableName: "career_records", recordId: id });
+    await logAudit({ userId: user.id, action: AUDIT_ACTIONS.DELETE_CAREER_RECORD, tableName: "career_records", recordId: id, newValues: { is_archived: true } });
     return Response.json({ data: { success: true } });
   } catch (error) {
     console.error("[DELETE /api/alumni/career/[id]]", error);

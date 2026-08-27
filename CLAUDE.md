@@ -39,6 +39,12 @@ Polytechnic College of La Union
 - RLS still applies for direct Supabase client queries
 - DATABASE_URL and DIRECT_URL both point to the Supabase PostgreSQL instance
 
+## Data Deletion Patterns (Soft Delete)
+- **Do not use hard deletes** for important records like Users, Employers, and Career History.
+- Profiles/Employers: Use `is_active = false` for soft deletion to retain data for potential restoration.
+- Career Records: Use `is_archived = true` and `archived_at` timestamp.
+- Always ensure GET routes filter these appropriately by default (`is_active = true` or `is_archived = false`).
+
 ## Environment Variables Required
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=

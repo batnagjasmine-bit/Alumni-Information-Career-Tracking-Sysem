@@ -6,6 +6,7 @@ import { FloatingChat } from "@/components/shared/FloatingChat";
 import { Suspense } from "react";
 import { VerificationToast } from "@/components/shared/VerificationToast";
 import { UnreadMessagesProvider } from "@/providers/UnreadMessagesProvider";
+import { AnnouncementPopup } from "@/components/shared/AnnouncementPopup";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -30,6 +31,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <Suspense fallback={null}>
           <FloatingChat />
           <VerificationToast />
+          <AnnouncementPopup />
         </Suspense>
       </UnreadMessagesProvider>
     </div>

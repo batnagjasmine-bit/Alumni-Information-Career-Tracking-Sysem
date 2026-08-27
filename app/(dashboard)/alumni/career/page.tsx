@@ -1,7 +1,7 @@
 "use client";
 // app/(dashboard)/alumni/career/page.tsx
 import { useState, useEffect, useCallback } from "react";
-import { Briefcase, Plus, Pencil, Trash2, Loader2, CheckCircle } from "lucide-react";
+import { Briefcase, Plus, Pencil, Trash2, Loader2, CheckCircle, Archive, ArchiveRestore } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -52,14 +52,16 @@ export default function AlumniCareerPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editRecord, setEditRecord] = useState<CareerRecord | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [restoreId, setRestoreId] = useState<string | null>(null);
+  const [tab, setTab] = useState<"active" | "archived">("active");
 
   const fetchRecords = useCallback(async () => {
     setLoading(true);
-    const res = await fetch("/api/alumni/career");
+    const res = await fetch(`/api/alumni/career?archived=${tab === "archived"}`);
     const { data } = await res.json();
     setRecords(data ?? []);
     setLoading(false);
-  }, []);
+  }, [tab]);
 
   useEffect(() => { fetchRecords(); }, [fetchRecords]);
 
@@ -78,10 +80,19 @@ export default function AlumniCareerPage() {
   const handleDelete = async () => {
     if (!deleteId) return;
     const res = await fetch(`/api/alumni/career/${deleteId}`, { method: "DELETE" });
-    if (!res.ok) { toast.error("Failed to delete"); return; }
-    toast.success("Record deleted");
+    if (!res.ok) { toast.error("Failed to archive"); return; }
+    toast.success("Record archived");
     setRecords(prev => prev.filter(r => r.id !== deleteId));
     setDeleteId(null);
+  };
+
+  const handleRestore = async () => {
+    if (!restoreId) return;
+    const res = await fetch(`/api/alumni/career/${restoreId}/restore`, { method: "POST" });
+    if (!res.ok) { toast.error("Failed to restore"); return; }
+    toast.success("Record restored");
+    setRecords(prev => prev.filter(r => r.id !== restoreId));
+    setRestoreId(null);
   };
 
   return (
@@ -96,6 +107,22 @@ export default function AlumniCareerPage() {
         </Button>
       </PageHeader>
 
+      {/* Tabs */}
+      <div className="flex gap-1 bg-muted rounded-lg p-1 w-fit">
+        <button
+          onClick={() => setTab("active")}
+          className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${tab === "active" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+        >
+          Active Records
+        </button>
+        <button
+          onClick={() => setTab("archived")}
+          className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${tab === "archived" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+        >
+          Archived
+        </button>
+      </div>
+
       {loading ? (
         <div className="space-y-4">
           {[...Array(3)].map((_, i) => <div key={i} className="h-28 rounded-xl bg-muted animate-pulse" />)}
@@ -106,9 +133,11 @@ export default function AlumniCareerPage() {
           title="No Career Records Yet"
           description="Start building your professional history by adding your first career record."
           action={
-            <Button size="sm" className="bg-primary" onClick={() => { setEditRecord(null); setDialogOpen(true); }}>
-              <Plus size={14} className="mr-1.5" /> Add Your First Record
-            </Button>
+            tab === "active" ? (
+              <Button size="sm" className="bg-primary" onClick={() => { setEditRecord(null); setDialogOpen(true); }}>
+                <Plus size={14} className="mr-1.5" /> Add Your First Record
+              </Button>
+            ) : undefined
           }
         />
       ) : (
@@ -161,22 +190,38 @@ export default function AlumniCareerPage() {
                       )}
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 hover:bg-muted"
-                        onClick={() => { setEditRecord(record); setDialogOpen(true); }}
-                      >
-                        <Pencil size={14} />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
-                        onClick={() => setDeleteId(record.id)}
-                      >
-                        <Trash2 size={14} />
-                      </Button>
+                      {tab === "active" ? (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 hover:bg-muted"
+                            onClick={() => { setEditRecord(record); setDialogOpen(true); }}
+                            title="Edit Record"
+                          >
+                            <Pencil size={14} />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 hover:bg-muted hover:text-foreground"
+                            onClick={() => setDeleteId(record.id)}
+                            title="Archive Record"
+                          >
+                            <Archive size={14} />
+                          </Button>
+                        </>
+                      ) : (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 hover:bg-primary/10 hover:text-primary"
+                          onClick={() => setRestoreId(record.id)}
+                          title="Restore Record"
+                        >
+                          <ArchiveRestore size={14} />
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -198,10 +243,20 @@ export default function AlumniCareerPage() {
         open={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}
-        title="Delete Career Record"
-        description="Are you sure you want to delete this record? This action cannot be undone."
-        confirmLabel="Delete"
-        confirmVariant="destructive"
+        title="Archive Career Record"
+        description="Are you sure you want to archive this record? It will be hidden from your active profile."
+        confirmLabel="Archive"
+        confirmVariant="default"
+      />
+
+      <ConfirmDialog
+        open={!!restoreId}
+        onClose={() => setRestoreId(null)}
+        onConfirm={handleRestore}
+        title="Restore Career Record"
+        description="Are you sure you want to restore this record to your active profile?"
+        confirmLabel="Restore"
+        confirmVariant="default"
       />
     </div>
   );

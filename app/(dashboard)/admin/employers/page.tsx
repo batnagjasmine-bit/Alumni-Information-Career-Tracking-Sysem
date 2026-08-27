@@ -21,10 +21,10 @@ interface Employer {
   created_at: string;
   approved_at?: string;
   rejection_reason?: string;
-  profiles: { full_name: string; email: string };
+  profiles: { full_name: string; email: string; is_active: boolean };
 }
 
-const FILTER_TABS = ["all", "pending", "approved", "rejected"] as const;
+const FILTER_TABS = ["all", "pending", "approved", "rejected", "deleted"] as const;
 
 export default function AdminEmployersPage() {
   const [employers, setEmployers] = useState<Employer[]>([]);
@@ -45,7 +45,13 @@ export default function AdminEmployersPage() {
 
   useEffect(() => {
     let result = employers;
-    if (tab !== "all") result = result.filter(e => e.approval_status === tab);
+    if (tab === "deleted") {
+      result = result.filter(e => e.profiles?.is_active === false);
+    } else {
+      result = result.filter(e => e.profiles?.is_active !== false);
+      if (tab !== "all") result = result.filter(e => e.approval_status === tab);
+    }
+    
     if (search) result = result.filter(e =>
       e.company_name.toLowerCase().includes(search.toLowerCase()) ||
       e.profiles?.full_name?.toLowerCase().includes(search.toLowerCase())
@@ -53,11 +59,23 @@ export default function AdminEmployersPage() {
     setFiltered(result);
   }, [employers, tab, search]);
 
+  const activeEmployers = employers.filter(e => e.profiles?.is_active !== false);
   const counts = {
-    all: employers.length,
-    pending: employers.filter(e => e.approval_status === "pending").length,
-    approved: employers.filter(e => e.approval_status === "approved").length,
-    rejected: employers.filter(e => e.approval_status === "rejected").length,
+    all: activeEmployers.length,
+    pending: activeEmployers.filter(e => e.approval_status === "pending").length,
+    approved: activeEmployers.filter(e => e.approval_status === "approved").length,
+    rejected: activeEmployers.filter(e => e.approval_status === "rejected").length,
+    deleted: employers.filter(e => e.profiles?.is_active === false).length,
+  };
+
+  const handleRestore = async (id: string) => {
+    const res = await fetch(`/api/admin/employers/${id}/restore`, { method: "POST" });
+    if (!res.ok) {
+      toast.error("Failed to restore employer");
+      return;
+    }
+    toast.success("Employer restored successfully");
+    fetchEmployers();
   };
 
   return (
@@ -72,7 +90,7 @@ export default function AdminEmployersPage() {
             onClick={() => setTab(t)}
             className={`px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all ${tab === t ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
           >
-            {t} <span className="ml-1.5 text-xs opacity-60">({counts[t]})</span>
+            {t === "deleted" ? "Recently Deleted" : t} <span className="ml-1.5 text-xs opacity-60">({counts[t]})</span>
           </button>
         ))}
       </div>
@@ -124,16 +142,27 @@ export default function AdminEmployersPage() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <Link href={`/admin/employers/${emp.id}`}>
+                      {tab === "deleted" ? (
                         <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 shrink-0"
-                          title="Review Employer"
+                          size="sm"
+                          variant="outline"
+                          className="h-8"
+                          onClick={() => handleRestore(emp.id)}
                         >
-                          <Eye size={16} />
+                          Restore
                         </Button>
-                      </Link>
+                      ) : (
+                        <Link href={`/admin/employers/${emp.id}`}>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 shrink-0"
+                            title="Review Employer"
+                          >
+                            <Eye size={16} />
+                          </Button>
+                        </Link>
+                      )}
                     </div>
                   </td>
                 </tr>
