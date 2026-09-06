@@ -53,6 +53,11 @@ stateDiagram-v2
 ### 3.3 Job Posting Lifecycle
 - **Pending** -> **Active** (Approved by Admin) -> **Expired** (Passes `expires_at` date in 2026) -> **Closed** (Filled by Employer).
 
+### 3.4 Career Record Lifecycle (Soft Delete & Archival)
+- **Active Record**: `is_archived = false, archived_at = null`. Displayed on the alumnus active career timeline, network profile, and included in live accreditation analytics.
+- **Archived Record**: `is_archived = true, archived_at = now()`. Soft-deleted upon user request; hidden from active directory and live metrics but fully preserved in the "Archived History" tab for auditability.
+- **Restored Record**: Re-activated via `POST /api/alumni/career/[id]/restore`, setting `is_archived = false, archived_at = null`. Immediately returns to the live timeline.
+
 ---
 
 ## 4. 2026 Institutional Analytics Specifications

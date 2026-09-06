@@ -13,10 +13,59 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { ClientOnly } from "@/components/shared/ClientOnly";
 import { 
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip,
   BarChart, Bar, XAxis, YAxis, CartesianGrid 
 } from "recharts";
+
+interface CustomBatchTooltipProps {
+  active?: boolean;
+  payload?: any[];
+  label?: string;
+}
+
+const CustomBatchTooltip = ({ active, payload, label }: CustomBatchTooltipProps) => {
+  if (!active || !payload || !payload.length) return null;
+  const item = payload[0];
+  const data = item?.payload;
+  if (!data) return null;
+
+  const total = Number(data.total ?? 0);
+  const employed = Number(data.employed ?? 0);
+  const employedPct = Number(data.employed_pct ?? 0);
+  const reported = Number(data.reported ?? 0);
+
+  return (
+    <div className="bg-card/95 backdrop-blur-md border border-border/80 rounded-xl p-3.5 shadow-xl text-xs space-y-2 min-w-[200px]">
+      <div className="flex items-center justify-between border-b border-border/50 pb-1.5 gap-2">
+        <span className="font-semibold text-foreground flex items-center gap-1.5">
+          <Award size={13} className="text-pclu-sky-500" />
+          Batch Cohort {label}
+        </span>
+        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+          Academic Track
+        </span>
+      </div>
+      <div className="space-y-1">
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Employment Rate:</span>
+          <span className="font-bold text-pclu-sky-500">{employedPct}%</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Employed Graduates:</span>
+          <span className="font-medium text-foreground">{employed} of {total}</span>
+        </div>
+        {reported > 0 && (
+          <div className="flex items-center justify-between text-[11px] text-muted-foreground/80 pt-0.5 border-t border-border/30">
+            <span>Survey Submissions:</span>
+            <span>{reported} alumni</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 interface SummaryStats {
   totalAlumni: number;
@@ -55,6 +104,7 @@ export default function AdminDashboardPage() {
   const [charts, setCharts] = useState<ChartData | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cohortRange, setCohortRange] = useState<"recent" | "all">("recent");
 
   // Active current date in 2026
   const currentDate = new Date();
@@ -99,6 +149,9 @@ export default function AdminDashboardPage() {
 
   const hasStatusData = (charts?.employmentStatusBreakdown ?? []).some(d => d.count > 0);
   const batchData = charts?.employmentByBatchYear ?? [];
+  const displayedBatches = cohortRange === "recent"
+    ? batchData.filter(b => Number(b.batch_year) >= 2021)
+    : batchData;
 
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto">
@@ -255,45 +308,69 @@ export default function AdminDashboardPage() {
 
               {/* Bar Chart: Employment Rate by Batch */}
               <div>
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 text-center">Employment Rate by Batch</h3>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Employment by Batch</h3>
+                  <div className="flex items-center p-0.5 rounded-lg bg-muted/60 text-[11px] font-medium border border-border/50 self-start sm:self-auto">
+                    <button
+                      type="button"
+                      onClick={() => setCohortRange("recent")}
+                      className={cn(
+                        "px-2.5 py-1 rounded-md transition-all cursor-pointer",
+                        cohortRange === "recent" ? "bg-background text-foreground shadow-xs font-semibold" : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      Recent (2021–2026)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCohortRange("all")}
+                      className={cn(
+                        "px-2.5 py-1 rounded-md transition-all cursor-pointer",
+                        cohortRange === "all" ? "bg-background text-foreground shadow-xs font-semibold" : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      All Recorded Batches
+                    </button>
+                  </div>
+                </div>
+
                 {loading ? (
                   <div className="h-[250px] w-full flex items-end gap-2 pb-4">
                     <Skeleton className="w-full h-1/2" /><Skeleton className="w-full h-full" /><Skeleton className="w-full h-3/4" /><Skeleton className="w-full h-1/4" />
                   </div>
-                ) : batchData.length === 0 ? (
+                ) : displayedBatches.length === 0 ? (
                   <div className="h-[250px] flex flex-col items-center justify-center text-center p-6 border border-dashed border-border rounded-xl bg-muted/20">
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
                       <Award size={20} />
                     </div>
                     <p className="text-sm font-medium text-foreground">No Graduate Batches</p>
                     <p className="text-xs text-muted-foreground mt-1 max-w-[220px]">
-                      No active alumni registered with valid batch cohorts.
+                      No active alumni registered for this selected batch range.
                     </p>
                   </div>
                 ) : (
-                  <div className="h-[250px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={batchData.slice(-6)}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                        <XAxis dataKey="batch_year" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                        <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={(val) => `${val}%`} />
-                        <RechartsTooltip 
-                          cursor={{ fill: 'hsl(var(--muted)/0.5)' }}
-                          contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                          formatter={(value: any, name: any, item: any) => [
-                            `${value}% (${item.payload.employed}/${item.payload.total} alumni)`,
-                            "Employed"
-                          ]}
-                          labelFormatter={(label) => `Batch Cohort ${label}`}
-                        />
-                        <Bar dataKey="employed_pct" name="Employed %" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
+                  <ClientOnly fallback={<div className="h-[250px] w-full bg-muted/20 animate-pulse rounded-xl" />}>
+                    <div className="h-[250px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={displayedBatches}>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                          <XAxis dataKey="batch_year" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                          <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={(val) => `${val}%`} />
+                          <RechartsTooltip 
+                            content={<CustomBatchTooltip />}
+                            cursor={{ fill: 'hsl(var(--muted)/0.3)' }}
+                          />
+                          <Bar dataKey="employed_pct" name="Employed %" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </ClientOnly>
                 )}
-                {batchData.length > 0 && (
+                {displayedBatches.length > 0 && (
                   <p className="text-[11px] text-center text-muted-foreground mt-2">
-                    Showing latest batch cohorts up to Year 2026 (deduplicated)
+                    {cohortRange === "recent"
+                      ? "Displaying active 2021–2026 trajectory (deduplicated cohorts)"
+                      : "Displaying all recorded historical alumni batches"}
                   </p>
                 )}
               </div>

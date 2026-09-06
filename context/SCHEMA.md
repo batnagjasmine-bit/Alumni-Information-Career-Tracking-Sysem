@@ -93,8 +93,11 @@ Extends `profiles` for company partners.
 | `start_date` | `DATE` | NULLABLE | Employment start |
 | `end_date` | `DATE` | NULLABLE | Employment end (null if current) |
 | `is_current` | `BOOLEAN` | DEFAULT `true` | Current employment flag |
-| `is_archived` | `BOOLEAN` | DEFAULT `false` | **Career record soft-delete flag** |
+| `is_archived` | `BOOLEAN` | DEFAULT `false` | **Career record soft-delete flag** (Migrated & indexed) |
 | `archived_at` | `TIMESTAMPTZ` | NULLABLE | Timestamp when record was archived |
+
+> [!NOTE]
+> **Schema Migration Applied**: `is_archived` and `archived_at` columns along with composite indexes (`idx_career_records_is_archived`, `idx_career_records_alumni_id_is_archived`) are live in Supabase PostgreSQL, ensuring full Prisma client and PostgREST synchronization.
 
 ---
 

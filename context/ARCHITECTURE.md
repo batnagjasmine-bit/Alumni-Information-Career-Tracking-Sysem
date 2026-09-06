@@ -83,8 +83,12 @@ The analytics engine (`/api/reports`) processes real-time database snapshots und
 2. **Deduplicated Multi-Job Aggregation**:
    - Uses set-based memory mapping to ensure an alumnus holding multiple concurrent positions is recorded as a single employed individual for cohort percentages.
 3. **2026 Batch Trajectory Representation**:
-   - Automatically sequences batch cohorts up to the current calendar year (**2026**).
-4. **Temporal Job Postings**:
+   - Automatically sequences contemporary batch cohorts (`[currentYear - 5 ... currentYear]`, i.e., **2021 through 2026**) guaranteeing contemporary context even when enrollment intake for current batches is pending.
+   - Preserves all historical cohorts (e.g., 2013, 2019) with a dual-mode client selector: **Recent Batches (2021–2026)** vs **All Recorded Batches**.
+4. **Zero-Crash Recharts Data Contract**:
+   - All interactive charts utilize typed `<CustomTooltip>` components wrapped in `<ClientOnly>` to eliminate SSR hydration mismatches in React 19 / Next.js 16.
+   - Defensive optional chaining prevents unhandled `TypeError` exceptions during bar border hover and transition renders.
+5. **Temporal Job Postings**:
    - Active job counts enforce `status = 'active' AND expires_at > now()`, preventing overdue postings from inflating metrics prior to cron execution.
 
 ---

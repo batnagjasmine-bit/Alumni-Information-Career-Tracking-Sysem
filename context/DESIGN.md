@@ -62,3 +62,25 @@ The administrative command center header features a dedicated real-time temporal
 - Calendar icon with current formatted date (e.g. `Sunday, September 6, 2026`).
 - Academic cycle pill: `AY 2025–2026 • 1st Semester`.
 - System operational badge: `Live Analytics (2026)`.
+
+---
+
+## 5. Alumni Career Timeline & Milestone Dialog Tokens
+
+### 5.1 Career Timeline Architecture
+- **Left-Rail Gradient Connector**:
+  `w-0.5 bg-gradient-to-b from-primary/30 via-border to-transparent` connecting chronological positions.
+- **Node Avatars**:
+  - Active: Filled emerald/primary pill with pulsing ring and `CheckCircle2` icon.
+  - Previous: High-contrast 2-letter uppercase corporate monogram badge.
+- **Tenure Duration Calculation**:
+  Dynamic relative tenure chip (e.g., `Jan 2024 — Present • 2 yrs 8 mos`).
+- **Tabbed Counter Badges**:
+  Real-time badge counts: `Active Timeline (N)` and `Archived History (N)`.
+
+### 5.2 Structured Milestone Dialog (`CareerRecordDialog`)
+- **4-Phase Visual Hierarchy**:
+  1. Employment Status & Role Duration (Accessible Radix switch for current role).
+  2. Role & Organization (Company name, Job title, Employment classification, Philippine Peso `₱` salary bands).
+  3. Industry & Scope (PCLU standard sector, Country, and Municipality).
+  4. Timeline & Key Achievements (Start/End dates and rich description textarea with 1,000-character live counter).

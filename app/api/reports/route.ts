@@ -126,6 +126,19 @@ export async function GET() {
       cohortMap.get(a.batch_year)!.allAlumniIds.add(a.id);
     }
 
+    // Sequence modern contemporary cohorts up to active calendar year (2026)
+    const currentYear = new Date().getFullYear();
+    const contemporaryStartYear = Math.max(2021, currentYear - 5);
+    for (let yr = contemporaryStartYear; yr <= currentYear; yr++) {
+      if (!cohortMap.has(yr)) {
+        cohortMap.set(yr, {
+          allAlumniIds: new Set<string>(),
+          employedAlumniIds: new Set<string>(),
+          reportedAlumniIds: new Set<string>(),
+        });
+      }
+    }
+
     const uniqueEmployedAlumni = new Set<string>();
     const uniqueReportedAlumni = new Set<string>();
 
