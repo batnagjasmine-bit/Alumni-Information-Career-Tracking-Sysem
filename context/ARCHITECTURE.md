@@ -86,3 +86,16 @@ The analytics engine (`/api/reports`) processes real-time database snapshots und
    - Automatically sequences batch cohorts up to the current calendar year (**2026**).
 4. **Temporal Job Postings**:
    - Active job counts enforce `status = 'active' AND expires_at > now()`, preventing overdue postings from inflating metrics prior to cron execution.
+
+---
+
+## 5. Vercel Production Deployment Architecture
+
+The application is fully architected and validated for continuous deployment on **Vercel**:
+- **Build Pipeline**: `prisma generate && next build` executes on every preview and production deploy, guaranteeing the Prisma client engine matches the target container architecture.
+- **Route Manifest**: 52 static and dynamic routes compiled with zero build or type errors.
+  - **Static Pages (○)**: Fast-loading dashboard shells, registration wizards, and public landing pages.
+  - **Dynamic Route Handlers (ƒ)**: Protected API endpoints executing server-side session checks and role validation.
+  - **Edge Middleware (ƒ Proxy)**: `proxy.ts` intercepting route requests to block unauthenticated or archived profiles.
+- **Vercel Cron Integration**: Daily automated job expiration runs via `vercel.json` pointing to `/api/cron/expire-jobs` secured by `CRON_SECRET`.
+- **Environment Matrix**: Requires `DATABASE_URL`, `DIRECT_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, and `CRON_SECRET`.

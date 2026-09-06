@@ -2010,6 +2010,7 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     profile_photo_url: string | null
+    cover_photo_url: string | null
     is_verified: boolean | null
     is_active: boolean | null
     created_at: Date | null
@@ -2025,6 +2026,7 @@ export namespace Prisma {
     email: string | null
     phone: string | null
     profile_photo_url: string | null
+    cover_photo_url: string | null
     is_verified: boolean | null
     is_active: boolean | null
     created_at: Date | null
@@ -2040,6 +2042,7 @@ export namespace Prisma {
     email: number
     phone: number
     profile_photo_url: number
+    cover_photo_url: number
     is_verified: number
     is_active: number
     created_at: number
@@ -2057,6 +2060,7 @@ export namespace Prisma {
     email?: true
     phone?: true
     profile_photo_url?: true
+    cover_photo_url?: true
     is_verified?: true
     is_active?: true
     created_at?: true
@@ -2072,6 +2076,7 @@ export namespace Prisma {
     email?: true
     phone?: true
     profile_photo_url?: true
+    cover_photo_url?: true
     is_verified?: true
     is_active?: true
     created_at?: true
@@ -2087,6 +2092,7 @@ export namespace Prisma {
     email?: true
     phone?: true
     profile_photo_url?: true
+    cover_photo_url?: true
     is_verified?: true
     is_active?: true
     created_at?: true
@@ -2175,6 +2181,7 @@ export namespace Prisma {
     email: string
     phone: string | null
     profile_photo_url: string | null
+    cover_photo_url: string | null
     is_verified: boolean
     is_active: boolean
     created_at: Date
@@ -2207,6 +2214,7 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     profile_photo_url?: boolean
+    cover_photo_url?: boolean
     is_verified?: boolean
     is_active?: boolean
     created_at?: boolean
@@ -2232,6 +2240,7 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     profile_photo_url?: boolean
+    cover_photo_url?: boolean
     is_verified?: boolean
     is_active?: boolean
     created_at?: boolean
@@ -2247,6 +2256,7 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     profile_photo_url?: boolean
+    cover_photo_url?: boolean
     is_verified?: boolean
     is_active?: boolean
     created_at?: boolean
@@ -2262,6 +2272,7 @@ export namespace Prisma {
     email?: boolean
     phone?: boolean
     profile_photo_url?: boolean
+    cover_photo_url?: boolean
     is_verified?: boolean
     is_active?: boolean
     created_at?: boolean
@@ -2270,7 +2281,7 @@ export namespace Prisma {
     is_searchable?: boolean
   }
 
-  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "role" | "full_name" | "email" | "phone" | "profile_photo_url" | "is_verified" | "is_active" | "created_at" | "updated_at" | "birthdate" | "is_searchable", ExtArgs["result"]["profile"]>
+  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "role" | "full_name" | "email" | "phone" | "profile_photo_url" | "cover_photo_url" | "is_verified" | "is_active" | "created_at" | "updated_at" | "birthdate" | "is_searchable", ExtArgs["result"]["profile"]>
   export type ProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     alumni?: boolean | Profile$alumniArgs<ExtArgs>
     employer?: boolean | Profile$employerArgs<ExtArgs>
@@ -2306,6 +2317,7 @@ export namespace Prisma {
       email: string
       phone: string | null
       profile_photo_url: string | null
+      cover_photo_url: string | null
       is_verified: boolean
       is_active: boolean
       created_at: Date
@@ -2750,6 +2762,7 @@ export namespace Prisma {
     readonly email: FieldRef<"Profile", 'String'>
     readonly phone: FieldRef<"Profile", 'String'>
     readonly profile_photo_url: FieldRef<"Profile", 'String'>
+    readonly cover_photo_url: FieldRef<"Profile", 'String'>
     readonly is_verified: FieldRef<"Profile", 'Boolean'>
     readonly is_active: FieldRef<"Profile", 'Boolean'>
     readonly created_at: FieldRef<"Profile", 'DateTime'>
@@ -5937,6 +5950,8 @@ export namespace Prisma {
     country: string | null
     city: string | null
     job_description: string | null
+    is_archived: boolean | null
+    archived_at: Date | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -5956,6 +5971,8 @@ export namespace Prisma {
     country: string | null
     city: string | null
     job_description: string | null
+    is_archived: boolean | null
+    archived_at: Date | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -5975,6 +5992,8 @@ export namespace Prisma {
     country: number
     city: number
     job_description: number
+    is_archived: number
+    archived_at: number
     created_at: number
     updated_at: number
     _all: number
@@ -5996,6 +6015,8 @@ export namespace Prisma {
     country?: true
     city?: true
     job_description?: true
+    is_archived?: true
+    archived_at?: true
     created_at?: true
     updated_at?: true
   }
@@ -6015,6 +6036,8 @@ export namespace Prisma {
     country?: true
     city?: true
     job_description?: true
+    is_archived?: true
+    archived_at?: true
     created_at?: true
     updated_at?: true
   }
@@ -6034,6 +6057,8 @@ export namespace Prisma {
     country?: true
     city?: true
     job_description?: true
+    is_archived?: true
+    archived_at?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -6126,6 +6151,8 @@ export namespace Prisma {
     country: string
     city: string | null
     job_description: string | null
+    is_archived: boolean
+    archived_at: Date | null
     created_at: Date
     updated_at: Date
     _count: CareerRecordCountAggregateOutputType | null
@@ -6162,6 +6189,8 @@ export namespace Prisma {
     country?: boolean
     city?: boolean
     job_description?: boolean
+    is_archived?: boolean
+    archived_at?: boolean
     created_at?: boolean
     updated_at?: boolean
     alumni?: boolean | AlumniDefaultArgs<ExtArgs>
@@ -6182,6 +6211,8 @@ export namespace Prisma {
     country?: boolean
     city?: boolean
     job_description?: boolean
+    is_archived?: boolean
+    archived_at?: boolean
     created_at?: boolean
     updated_at?: boolean
     alumni?: boolean | AlumniDefaultArgs<ExtArgs>
@@ -6202,6 +6233,8 @@ export namespace Prisma {
     country?: boolean
     city?: boolean
     job_description?: boolean
+    is_archived?: boolean
+    archived_at?: boolean
     created_at?: boolean
     updated_at?: boolean
     alumni?: boolean | AlumniDefaultArgs<ExtArgs>
@@ -6222,11 +6255,13 @@ export namespace Prisma {
     country?: boolean
     city?: boolean
     job_description?: boolean
+    is_archived?: boolean
+    archived_at?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type CareerRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "alumni_id" | "employment_status" | "employer_name" | "job_title" | "industry" | "employment_type" | "salary_range" | "start_date" | "end_date" | "is_current" | "country" | "city" | "job_description" | "created_at" | "updated_at", ExtArgs["result"]["careerRecord"]>
+  export type CareerRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "alumni_id" | "employment_status" | "employer_name" | "job_title" | "industry" | "employment_type" | "salary_range" | "start_date" | "end_date" | "is_current" | "country" | "city" | "job_description" | "is_archived" | "archived_at" | "created_at" | "updated_at", ExtArgs["result"]["careerRecord"]>
   export type CareerRecordInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     alumni?: boolean | AlumniDefaultArgs<ExtArgs>
   }
@@ -6257,6 +6292,8 @@ export namespace Prisma {
       country: string
       city: string | null
       job_description: string | null
+      is_archived: boolean
+      archived_at: Date | null
       created_at: Date
       updated_at: Date
     }, ExtArgs["result"]["careerRecord"]>
@@ -6697,6 +6734,8 @@ export namespace Prisma {
     readonly country: FieldRef<"CareerRecord", 'String'>
     readonly city: FieldRef<"CareerRecord", 'String'>
     readonly job_description: FieldRef<"CareerRecord", 'String'>
+    readonly is_archived: FieldRef<"CareerRecord", 'Boolean'>
+    readonly archived_at: FieldRef<"CareerRecord", 'DateTime'>
     readonly created_at: FieldRef<"CareerRecord", 'DateTime'>
     readonly updated_at: FieldRef<"CareerRecord", 'DateTime'>
   }
@@ -15142,6 +15181,7 @@ export namespace Prisma {
     email: 'email',
     phone: 'phone',
     profile_photo_url: 'profile_photo_url',
+    cover_photo_url: 'cover_photo_url',
     is_verified: 'is_verified',
     is_active: 'is_active',
     created_at: 'created_at',
@@ -15210,6 +15250,8 @@ export namespace Prisma {
     country: 'country',
     city: 'city',
     job_description: 'job_description',
+    is_archived: 'is_archived',
+    archived_at: 'archived_at',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -15477,6 +15519,7 @@ export namespace Prisma {
     email?: StringFilter<"Profile"> | string
     phone?: StringNullableFilter<"Profile"> | string | null
     profile_photo_url?: StringNullableFilter<"Profile"> | string | null
+    cover_photo_url?: StringNullableFilter<"Profile"> | string | null
     is_verified?: BoolFilter<"Profile"> | boolean
     is_active?: BoolFilter<"Profile"> | boolean
     created_at?: DateTimeFilter<"Profile"> | Date | string
@@ -15501,6 +15544,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrderInput | SortOrder
     profile_photo_url?: SortOrderInput | SortOrder
+    cover_photo_url?: SortOrderInput | SortOrder
     is_verified?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
@@ -15528,6 +15572,7 @@ export namespace Prisma {
     full_name?: StringFilter<"Profile"> | string
     phone?: StringNullableFilter<"Profile"> | string | null
     profile_photo_url?: StringNullableFilter<"Profile"> | string | null
+    cover_photo_url?: StringNullableFilter<"Profile"> | string | null
     is_verified?: BoolFilter<"Profile"> | boolean
     is_active?: BoolFilter<"Profile"> | boolean
     created_at?: DateTimeFilter<"Profile"> | Date | string
@@ -15552,6 +15597,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrderInput | SortOrder
     profile_photo_url?: SortOrderInput | SortOrder
+    cover_photo_url?: SortOrderInput | SortOrder
     is_verified?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
@@ -15573,6 +15619,7 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"Profile"> | string
     phone?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     profile_photo_url?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    cover_photo_url?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     is_verified?: BoolWithAggregatesFilter<"Profile"> | boolean
     is_active?: BoolWithAggregatesFilter<"Profile"> | boolean
     created_at?: DateTimeWithAggregatesFilter<"Profile"> | Date | string
@@ -15823,6 +15870,8 @@ export namespace Prisma {
     country?: StringFilter<"CareerRecord"> | string
     city?: StringNullableFilter<"CareerRecord"> | string | null
     job_description?: StringNullableFilter<"CareerRecord"> | string | null
+    is_archived?: BoolFilter<"CareerRecord"> | boolean
+    archived_at?: DateTimeNullableFilter<"CareerRecord"> | Date | string | null
     created_at?: DateTimeFilter<"CareerRecord"> | Date | string
     updated_at?: DateTimeFilter<"CareerRecord"> | Date | string
     alumni?: XOR<AlumniScalarRelationFilter, AlumniWhereInput>
@@ -15843,6 +15892,8 @@ export namespace Prisma {
     country?: SortOrder
     city?: SortOrderInput | SortOrder
     job_description?: SortOrderInput | SortOrder
+    is_archived?: SortOrder
+    archived_at?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     alumni?: AlumniOrderByWithRelationInput
@@ -15866,6 +15917,8 @@ export namespace Prisma {
     country?: StringFilter<"CareerRecord"> | string
     city?: StringNullableFilter<"CareerRecord"> | string | null
     job_description?: StringNullableFilter<"CareerRecord"> | string | null
+    is_archived?: BoolFilter<"CareerRecord"> | boolean
+    archived_at?: DateTimeNullableFilter<"CareerRecord"> | Date | string | null
     created_at?: DateTimeFilter<"CareerRecord"> | Date | string
     updated_at?: DateTimeFilter<"CareerRecord"> | Date | string
     alumni?: XOR<AlumniScalarRelationFilter, AlumniWhereInput>
@@ -15886,6 +15939,8 @@ export namespace Prisma {
     country?: SortOrder
     city?: SortOrderInput | SortOrder
     job_description?: SortOrderInput | SortOrder
+    is_archived?: SortOrder
+    archived_at?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: CareerRecordCountOrderByAggregateInput
@@ -15911,6 +15966,8 @@ export namespace Prisma {
     country?: StringWithAggregatesFilter<"CareerRecord"> | string
     city?: StringNullableWithAggregatesFilter<"CareerRecord"> | string | null
     job_description?: StringNullableWithAggregatesFilter<"CareerRecord"> | string | null
+    is_archived?: BoolWithAggregatesFilter<"CareerRecord"> | boolean
+    archived_at?: DateTimeNullableWithAggregatesFilter<"CareerRecord"> | Date | string | null
     created_at?: DateTimeWithAggregatesFilter<"CareerRecord"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"CareerRecord"> | Date | string
   }
@@ -16491,6 +16548,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -16515,6 +16573,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -16539,6 +16598,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16563,6 +16623,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16587,6 +16648,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -16602,6 +16664,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16617,6 +16680,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16900,6 +16964,8 @@ export namespace Prisma {
     country?: string
     city?: string | null
     job_description?: string | null
+    is_archived?: boolean
+    archived_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
     alumni: AlumniCreateNestedOneWithoutCareer_recordsInput
@@ -16920,6 +16986,8 @@ export namespace Prisma {
     country?: string
     city?: string | null
     job_description?: string | null
+    is_archived?: boolean
+    archived_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -16938,6 +17006,8 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     city?: NullableStringFieldUpdateOperationsInput | string | null
     job_description?: NullableStringFieldUpdateOperationsInput | string | null
+    is_archived?: BoolFieldUpdateOperationsInput | boolean
+    archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     alumni?: AlumniUpdateOneRequiredWithoutCareer_recordsNestedInput
@@ -16958,6 +17028,8 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     city?: NullableStringFieldUpdateOperationsInput | string | null
     job_description?: NullableStringFieldUpdateOperationsInput | string | null
+    is_archived?: BoolFieldUpdateOperationsInput | boolean
+    archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -16977,6 +17049,8 @@ export namespace Prisma {
     country?: string
     city?: string | null
     job_description?: string | null
+    is_archived?: boolean
+    archived_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -16995,6 +17069,8 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     city?: NullableStringFieldUpdateOperationsInput | string | null
     job_description?: NullableStringFieldUpdateOperationsInput | string | null
+    is_archived?: BoolFieldUpdateOperationsInput | boolean
+    archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17014,6 +17090,8 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     city?: NullableStringFieldUpdateOperationsInput | string | null
     job_description?: NullableStringFieldUpdateOperationsInput | string | null
+    is_archived?: BoolFieldUpdateOperationsInput | boolean
+    archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17790,6 +17868,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     profile_photo_url?: SortOrder
+    cover_photo_url?: SortOrder
     is_verified?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
@@ -17805,6 +17884,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     profile_photo_url?: SortOrder
+    cover_photo_url?: SortOrder
     is_verified?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
@@ -17820,6 +17900,7 @@ export namespace Prisma {
     email?: SortOrder
     phone?: SortOrder
     profile_photo_url?: SortOrder
+    cover_photo_url?: SortOrder
     is_verified?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
@@ -18147,6 +18228,8 @@ export namespace Prisma {
     country?: SortOrder
     city?: SortOrder
     job_description?: SortOrder
+    is_archived?: SortOrder
+    archived_at?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -18166,6 +18249,8 @@ export namespace Prisma {
     country?: SortOrder
     city?: SortOrder
     job_description?: SortOrder
+    is_archived?: SortOrder
+    archived_at?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -18185,6 +18270,8 @@ export namespace Prisma {
     country?: SortOrder
     city?: SortOrder
     job_description?: SortOrder
+    is_archived?: SortOrder
+    archived_at?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -20278,6 +20365,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -20301,6 +20389,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -20336,6 +20425,8 @@ export namespace Prisma {
     country?: string
     city?: string | null
     job_description?: string | null
+    is_archived?: boolean
+    archived_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -20354,6 +20445,8 @@ export namespace Prisma {
     country?: string
     city?: string | null
     job_description?: string | null
+    is_archived?: boolean
+    archived_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -20418,6 +20511,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20441,6 +20535,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20491,6 +20586,8 @@ export namespace Prisma {
     country?: StringFilter<"CareerRecord"> | string
     city?: StringNullableFilter<"CareerRecord"> | string | null
     job_description?: StringNullableFilter<"CareerRecord"> | string | null
+    is_archived?: BoolFilter<"CareerRecord"> | boolean
+    archived_at?: DateTimeNullableFilter<"CareerRecord"> | Date | string | null
     created_at?: DateTimeFilter<"CareerRecord"> | Date | string
     updated_at?: DateTimeFilter<"CareerRecord"> | Date | string
   }
@@ -20533,6 +20630,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -20556,6 +20654,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -20584,6 +20683,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -20607,6 +20707,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -20698,6 +20799,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20721,6 +20823,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20755,6 +20858,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -20778,6 +20882,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21257,6 +21362,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -21280,6 +21386,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -21319,6 +21426,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21342,6 +21450,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21365,6 +21474,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -21388,6 +21498,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -21427,6 +21538,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21450,6 +21562,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21473,6 +21586,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -21496,6 +21610,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -21535,6 +21650,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21558,6 +21674,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21581,6 +21698,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -21604,6 +21722,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -21632,6 +21751,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -21655,6 +21775,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -21720,6 +21841,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21743,6 +21865,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21777,6 +21900,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21800,6 +21924,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21860,6 +21985,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -21883,6 +22009,7 @@ export namespace Prisma {
     email: string
     phone?: string | null
     profile_photo_url?: string | null
+    cover_photo_url?: string | null
     is_verified?: boolean
     is_active?: boolean
     created_at?: Date | string
@@ -21949,6 +22076,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -21972,6 +22100,7 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     profile_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
+    cover_photo_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_verified?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22312,6 +22441,8 @@ export namespace Prisma {
     country?: string
     city?: string | null
     job_description?: string | null
+    is_archived?: boolean
+    archived_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -22341,6 +22472,8 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     city?: NullableStringFieldUpdateOperationsInput | string | null
     job_description?: NullableStringFieldUpdateOperationsInput | string | null
+    is_archived?: BoolFieldUpdateOperationsInput | boolean
+    archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22359,6 +22492,8 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     city?: NullableStringFieldUpdateOperationsInput | string | null
     job_description?: NullableStringFieldUpdateOperationsInput | string | null
+    is_archived?: BoolFieldUpdateOperationsInput | boolean
+    archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22377,6 +22512,8 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     city?: NullableStringFieldUpdateOperationsInput | string | null
     job_description?: NullableStringFieldUpdateOperationsInput | string | null
+    is_archived?: BoolFieldUpdateOperationsInput | boolean
+    archived_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }

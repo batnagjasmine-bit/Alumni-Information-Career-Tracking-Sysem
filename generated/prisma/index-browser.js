@@ -127,6 +127,7 @@ exports.Prisma.ProfileScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   profile_photo_url: 'profile_photo_url',
+  cover_photo_url: 'cover_photo_url',
   is_verified: 'is_verified',
   is_active: 'is_active',
   created_at: 'created_at',
@@ -186,6 +187,8 @@ exports.Prisma.CareerRecordScalarFieldEnum = {
   country: 'country',
   city: 'city',
   job_description: 'job_description',
+  is_archived: 'is_archived',
+  archived_at: 'archived_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
