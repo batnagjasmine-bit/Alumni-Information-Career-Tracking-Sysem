@@ -1,7 +1,7 @@
 "use client";
 // app/(dashboard)/admin/alumni/page.tsx
 import { useState, useEffect, useCallback } from "react";
-import { Users, Search, Download, GraduationCap, Trash2 } from "lucide-react";
+import { Users, Search, Download, Trash2, Archive, RotateCcw } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -26,39 +26,61 @@ interface AlumniRecord {
   career_records: Array<{ employment_status: string; job_title?: string; is_current: boolean }>;
 }
 
+const FILTER_TABS = ["active", "archived", "all"] as const;
+
 export default function AdminAlumniPage() {
   const [alumni, setAlumni] = useState<AlumniRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [course, setCourse] = useState("");
   const [batchYear, setBatchYear] = useState("");
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [deleteName, setDeleteName] = useState<string | null>(null);
+  const [tab, setTab] = useState<typeof FILTER_TABS[number]>("active");
+  const [counts, setCounts] = useState({ all: 0, active: 0, archived: 0 });
+
+  // Dialog targets
+  const [archiveTarget, setArchiveTarget] = useState<{ id: string; name: string } | null>(null);
+  const [restoreTarget, setRestoreTarget] = useState<{ id: string; name: string } | null>(null);
+
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const PAGE_SIZE = 20;
 
   const fetchAlumni = useCallback(async () => {
     setLoading(true);
-    const params = new URLSearchParams({ page: String(page) });
+    const params = new URLSearchParams({
+      page: String(page),
+      status: tab,
+    });
     if (search) params.set("search", search);
     if (course) params.set("course", course);
     if (batchYear) params.set("batch_year", batchYear);
 
-    const res = await fetch(`/api/admin/alumni?${params}`);
-    const { data, count } = await res.json();
-    setAlumni(data ?? []);
-    setTotal(count ?? 0);
-    setLoading(false);
-  }, [page, search, course, batchYear]);
+    try {
+      const res = await fetch(`/api/admin/alumni?${params}`);
+      const json = await res.json();
+      setAlumni(json.data ?? []);
+      setTotal(json.count ?? 0);
+      if (json.counts) {
+        setCounts(json.counts);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load alumni records");
+    } finally {
+      setLoading(false);
+    }
+  }, [page, search, course, batchYear, tab]);
 
-  useEffect(() => { fetchAlumni(); }, [fetchAlumni]);
+  useEffect(() => {
+    fetchAlumni();
+  }, [fetchAlumni]);
 
   const exportToExcel = async () => {
     const { utils, writeFile } = await import("xlsx");
     const rows = alumni.map(a => ({
       "Full Name": a.profiles?.full_name,
       "Email": a.profiles?.email,
+      "Status": a.profiles?.is_active === false ? "Archived" : "Active",
       "Course": a.course,
       "Batch Year": a.batch_year,
       "Graduation Year": a.graduation_year,
@@ -72,44 +94,74 @@ export default function AdminAlumniPage() {
     const ws = utils.json_to_sheet(rows);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Alumni");
-    writeFile(wb, `PCLU_Alumni_${format(new Date(), "yyyyMMdd")}.xlsx`);
+    writeFile(wb, `PCLU_Alumni_${tab}_${format(new Date(), "yyyyMMdd")}.xlsx`);
   };
 
   const currentStatus = (records: AlumniRecord["career_records"]) =>
     records?.find(r => r.is_current)?.employment_status;
 
-  const confirmDelete = (id: string, name: string) => {
-    setDeleteId(id);
-    setDeleteName(name || "Unknown");
-  };
-
-  const handleDelete = async () => {
-    if (!deleteId) return;
-
-    setAlumni(prev => prev.filter(a => a.id !== deleteId));
-    setTotal(t => t - 1);
+  const handleArchive = async () => {
+    if (!archiveTarget) return;
 
     try {
-      const res = await fetch(`/api/admin/alumni/${deleteId}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to delete");
-      toast.success("Alumni deleted successfully");
+      const res = await fetch(`/api/admin/alumni/${archiveTarget.id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to archive");
+      toast.success(`Alumni "${archiveTarget.name}" has been archived successfully`);
+      fetchAlumni();
     } catch (err) {
       console.error(err);
-      toast.error("Failed to delete alumni");
-      fetchAlumni(); // refresh to restore
+      toast.error("Failed to archive alumni account");
     } finally {
-      setDeleteId(null);
-      setDeleteName(null);
+      setArchiveTarget(null);
+    }
+  };
+
+  const handleRestore = async () => {
+    if (!restoreTarget) return;
+
+    try {
+      const res = await fetch(`/api/admin/alumni/${restoreTarget.id}/restore`, { method: "POST" });
+      if (!res.ok) throw new Error("Failed to restore");
+      toast.success(`Alumni "${restoreTarget.name}" account restored successfully!`);
+      fetchAlumni();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to restore alumni account");
+    } finally {
+      setRestoreTarget(null);
     }
   };
 
   return (
     <div className="space-y-6">
-      <PageHeader icon={Users} title="Alumni Management" description={`${total} total alumni registered`}>
+      <PageHeader
+        icon={Users}
+        title="Alumni Management"
+        description={`${counts.active} active alumni registered • ${counts.archived} archived`}
+      >
         <Button size="sm" variant="outline" onClick={exportToExcel} className="gap-1.5">
           <Download size={14} /> Export Excel
         </Button>
       </PageHeader>
+
+      {/* Tabs */}
+      <div className="flex gap-1 bg-muted rounded-lg p-1 w-fit">
+        {FILTER_TABS.map(t => {
+          const label = t === "active" ? "Active Alumni" : t === "archived" ? "Recently Archived" : "All Accounts";
+          const countVal = counts[t];
+          return (
+            <button
+              key={t}
+              onClick={() => { setTab(t); setPage(1); }}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all ${
+                tab === t ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {label} <span className="ml-1.5 text-xs opacity-60">({countVal})</span>
+            </button>
+          );
+        })}
+      </div>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
@@ -146,7 +198,15 @@ export default function AdminAlumniPage() {
       {loading ? (
         <div className="space-y-3">{[...Array(8)].map((_, i) => <div key={i} className="h-14 rounded-xl bg-muted animate-pulse" />)}</div>
       ) : alumni.length === 0 ? (
-        <EmptyState icon={Users} title="No Alumni Found" description="No alumni match your current filters." />
+        <EmptyState
+          icon={Users}
+          title={tab === "archived" ? "No Archived Alumni" : "No Alumni Found"}
+          description={
+            tab === "archived"
+              ? "There are no archived alumni accounts at this time."
+              : "No alumni match your current search and filter criteria."
+          }
+        />
       ) : (
         <>
           <div className="rounded-xl border border-border overflow-hidden">
@@ -166,10 +226,19 @@ export default function AdminAlumniPage() {
                 {alumni.map(a => {
                   const status = currentStatus(a.career_records);
                   const jobTitle = a.career_records?.find(r => r.is_current)?.job_title;
+                  const isArchived = a.profiles?.is_active === false;
+
                   return (
-                    <tr key={a.id} className="hover:bg-muted/30 transition-colors">
+                    <tr key={a.id} className={`hover:bg-muted/30 transition-colors ${isArchived ? "bg-muted/10 opacity-75" : ""}`}>
                       <td className="px-4 py-3">
-                        <p className="font-medium text-foreground">{a.profiles?.full_name}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-foreground">{a.profiles?.full_name}</p>
+                          {isArchived && (
+                            <span className="text-[10px] font-semibold tracking-wide uppercase px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/20">
+                              Archived
+                            </span>
+                          )}
+                        </div>
                         <p className="text-xs text-muted-foreground">{a.profiles?.email}</p>
                         {a.profiles?.is_verified && (
                           <span className="text-xs text-emerald-500">✓ Verified</span>
@@ -190,15 +259,27 @@ export default function AdminAlumniPage() {
                         {format(new Date(a.created_at), "MMM d, yyyy")}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => confirmDelete(a.id, a.profiles?.full_name || "Unknown")}
-                          title="Delete Alumni"
-                        >
-                          <Trash2 size={16} />
-                        </Button>
+                        {isArchived ? (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 gap-1.5 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-500/10 border-emerald-500/30"
+                            onClick={() => setRestoreTarget({ id: a.id, name: a.profiles?.full_name || "Unknown" })}
+                            title="Restore Alumni Account"
+                          >
+                            <RotateCcw size={14} /> Restore
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 gap-1.5 text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10"
+                            onClick={() => setArchiveTarget({ id: a.id, name: a.profiles?.full_name || "Unknown" })}
+                            title="Archive Alumni Account"
+                          >
+                            <Archive size={14} /> Archive
+                          </Button>
+                        )}
                       </td>
                     </tr>
                   );
@@ -220,17 +301,25 @@ export default function AdminAlumniPage() {
         </>
       )}
 
+      {/* Archive Confirmation Modal */}
       <ConfirmDialog
-        open={!!deleteId}
-        onClose={() => {
-          setDeleteId(null);
-          setDeleteName(null);
-        }}
-        onConfirm={handleDelete}
-        title="Delete Alumni"
-        description={`Are you sure you want to permanently delete alumni: ${deleteName}? This action cannot be undone and will delete all associated records.`}
-        confirmLabel="Delete Alumni"
+        open={!!archiveTarget}
+        onClose={() => setArchiveTarget(null)}
+        onConfirm={handleArchive}
+        title="Archive Alumni Account"
+        description={`Are you sure you want to archive alumni: ${archiveTarget?.name}? The account will be deactivated and moved to the "Recently Archived" tab. All career history, applications, and profile records are preserved and can be restored at any time.`}
+        confirmLabel="Archive Account"
         confirmVariant="destructive"
+      />
+
+      {/* Restore Confirmation Modal */}
+      <ConfirmDialog
+        open={!!restoreTarget}
+        onClose={() => setRestoreTarget(null)}
+        onConfirm={handleRestore}
+        title="Restore Alumni Account"
+        description={`Are you sure you want to restore alumni: ${restoreTarget?.name}? Their account will be reactivated immediately with full platform access and all career records preserved.`}
+        confirmLabel="Restore Account"
       />
     </div>
   );

@@ -18,10 +18,21 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search") ?? "";
     const course = searchParams.get("course") ?? "";
     const batchYear = searchParams.get("batch_year") ?? "";
+    const status = searchParams.get("status") ?? "active"; // "active" | "archived" | "all"
     const pageSize = 20;
     const from = (page - 1) * pageSize;
 
     const adminClient = createAdminClient();
+
+    // Query counts for tabs
+    const [activeRes, archivedRes] = await Promise.all([
+      adminClient.from("alumni").select("id, profiles!inner(is_active)", { count: "exact", head: true }).eq("profiles.is_active", true),
+      adminClient.from("alumni").select("id, profiles!inner(is_active)", { count: "exact", head: true }).eq("profiles.is_active", false),
+    ]);
+
+    const activeCount = activeRes.count ?? 0;
+    const archivedCount = archivedRes.count ?? 0;
+    const totalCount = activeCount + archivedCount;
 
     let query = adminClient
       .from("alumni")
@@ -30,6 +41,13 @@ export async function GET(request: NextRequest) {
         profiles!inner(full_name, email, phone, is_verified, is_active),
         career_records(employment_status, employer_name, job_title, is_current)
       `, { count: "exact" });
+
+    // Filter by status (active vs archived)
+    if (status === "active") {
+      query = query.eq("profiles.is_active", true);
+    } else if (status === "archived") {
+      query = query.eq("profiles.is_active", false);
+    }
 
     if (search) {
       // Filter through profiles.full_name — use the join
@@ -43,7 +61,17 @@ export async function GET(request: NextRequest) {
       .range(from, from + pageSize - 1);
 
     if (error) throw error;
-    return Response.json({ data, count, page, pageSize });
+    return Response.json({
+      data,
+      count,
+      page,
+      pageSize,
+      counts: {
+        all: totalCount,
+        active: activeCount,
+        archived: archivedCount,
+      }
+    });
   } catch (error) {
     console.error("[GET /api/admin/alumni]", error);
     return Response.json({ error: "Internal server error" }, { status: 500 });

@@ -2,10 +2,11 @@
 // app/(dashboard)/admin/dashboard/page.tsx
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
 import {
   Users, Building2, Briefcase, TrendingUp, AlertCircle,
-  Clock, LayoutDashboard, ChevronRight, ScrollText, UserPlus, FileEdit, Trash2, Mail
+  Clock, LayoutDashboard, ChevronRight, ScrollText, UserPlus, FileEdit, Trash2, Mail,
+  Calendar, CheckCircle2, Award
 } from "lucide-react";
 import { StatsCard } from "@/components/admin/StatsCard";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -23,6 +24,8 @@ interface SummaryStats {
   activeJobPostings: number;
   totalApplications: number;
   overallEmploymentRate: number;
+  reportedEmploymentRate?: number;
+  totalReportedAlumni?: number;
 }
 
 interface AuditLog {
@@ -33,8 +36,16 @@ interface AuditLog {
 }
 
 interface ChartData {
-  employmentStatusBreakdown: any[];
-  employmentByBatchYear: any[];
+  employmentStatusBreakdown: Array<{ status: string; label: string; count: number }>;
+  employmentByBatchYear: Array<{
+    batch_year: string;
+    total: number;
+    reported: number;
+    employed: number;
+    employed_pct: number;
+    reported_employed_pct?: number;
+    unemployed_pct: number;
+  }>;
 }
 
 const PIE_COLORS = ["#0ea5e9", "#10b981", "#f59e0b", "#8b5cf6", "#f43f5e", "#64748b"];
@@ -45,6 +56,10 @@ export default function AdminDashboardPage() {
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Active current date in 2026
+  const currentDate = new Date();
+  const formattedCurrentDate = format(currentDate, "EEEE, MMMM d, yyyy");
+
   useEffect(() => {
     Promise.all([
       fetch("/api/reports").then(r => r.json()),
@@ -52,8 +67,8 @@ export default function AdminDashboardPage() {
     ]).then(([reportsData, auditData]) => {
       setStats(reportsData.summaryStats);
       setCharts({
-        employmentStatusBreakdown: reportsData.employmentStatusBreakdown,
-        employmentByBatchYear: reportsData.employmentByBatchYear
+        employmentStatusBreakdown: reportsData.employmentStatusBreakdown ?? [],
+        employmentByBatchYear: reportsData.employmentByBatchYear ?? []
       });
       setAuditLogs(auditData.data || []);
       setLoading(false);
@@ -71,9 +86,9 @@ export default function AdminDashboardPage() {
   ];
 
   const getActionIcon = (action: string) => {
-    if (action.includes("CREATE") || action.includes("APPROVE")) return <UserPlus size={14} className="text-emerald-500" />;
+    if (action.includes("CREATE") || action.includes("APPROVE") || action.includes("RESTORE")) return <UserPlus size={14} className="text-emerald-500" />;
     if (action.includes("UPDATE") || action.includes("EDIT")) return <FileEdit size={14} className="text-amber-500" />;
-    if (action.includes("DELETE") || action.includes("REVOKE") || action.includes("REJECT")) return <Trash2 size={14} className="text-red-500" />;
+    if (action.includes("DELETE") || action.includes("REVOKE") || action.includes("REJECT") || action.includes("ARCHIVE")) return <Trash2 size={14} className="text-rose-500" />;
     if (action.includes("MESSAGE") || action.includes("EMAIL")) return <Mail size={14} className="text-blue-500" />;
     return <ScrollText size={14} className="text-muted-foreground" />;
   };
@@ -82,27 +97,55 @@ export default function AdminDashboardPage() {
     return action.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase());
   };
 
+  const hasStatusData = (charts?.employmentStatusBreakdown ?? []).some(d => d.count > 0);
+  const batchData = charts?.employmentByBatchYear ?? [];
+
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <PageHeader
-          icon={LayoutDashboard}
-          title="Command Center"
-          description="AICTS Central Administrative Dashboard"
-        />
-        <Link href="/admin/reports" className={cn(buttonVariants({ size: "default" }), "bg-pclu-sky-600 hover:bg-pclu-sky-700 shadow-md shadow-pclu-sky-500/20")}>
-          <TrendingUp size={16} className="mr-2" /> Full Analytics
-        </Link>
+      {/* Top Banner with 2026 Temporal Awareness */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card/60 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-border/80 shadow-sm">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 text-primary">
+            <LayoutDashboard size={24} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="font-heading text-xl sm:text-2xl font-bold text-foreground">Command Center</h1>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Live 2026 System
+              </span>
+            </div>
+            <p className="text-muted-foreground text-sm mt-0.5">
+              Polytechnic College of La Union • AICTS Administrative Center
+            </p>
+          </div>
+        </div>
+
+        {/* Temporal & Action Widgets */}
+        <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
+          <div className="flex flex-col sm:items-end text-xs text-muted-foreground bg-muted/40 px-3.5 py-2 rounded-xl border border-border/50">
+            <div className="flex items-center gap-1.5 font-medium text-foreground">
+              <Calendar size={13} className="text-pclu-sky-500" />
+              <span>{formattedCurrentDate}</span>
+            </div>
+            <span className="text-[11px] opacity-75">Academic Year 2025–2026 • 1st Semester</span>
+          </div>
+
+          <Link href="/admin/reports" className={cn(buttonVariants({ size: "default" }), "bg-pclu-sky-600 hover:bg-pclu-sky-700 shadow-md shadow-pclu-sky-500/20 shrink-0")}>
+            <TrendingUp size={16} className="mr-2" /> Full Analytics
+          </Link>
+        </div>
       </div>
 
       {/* High-End Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatsCard
-          title="Total Alumni"
+          title="Total Active Alumni"
           value={loading ? "—" : stats?.totalAlumni ?? 0}
           icon={Users}
           color="blue"
-          description="Registered graduates"
+          description="Excludes archived profiles"
           loading={loading}
         />
         <StatsCard
@@ -110,7 +153,7 @@ export default function AdminDashboardPage() {
           value={loading ? "—" : stats?.approvedEmployers ?? 0}
           icon={Building2}
           color="green"
-          description="Verified companies"
+          description="Active corporate partners"
           loading={loading}
         />
         <StatsCard
@@ -118,7 +161,7 @@ export default function AdminDashboardPage() {
           value={loading ? "—" : stats?.activeJobPostings ?? 0}
           icon={Briefcase}
           color="amber"
-          description="Live on job board"
+          description="Live & unexpired for 2026"
           loading={loading}
         />
         <StatsCard
@@ -126,7 +169,11 @@ export default function AdminDashboardPage() {
           value={loading ? "—" : `${stats?.overallEmploymentRate ?? 0}%`}
           icon={TrendingUp}
           color="purple"
-          description="Based on current records"
+          description={
+            stats?.reportedEmploymentRate !== undefined && stats.totalReportedAlumni
+              ? `${stats.reportedEmploymentRate}% of reported (${stats.totalReportedAlumni})`
+              : "Deduplicated active cohort"
+          }
           loading={loading}
         />
       </div>
@@ -139,9 +186,14 @@ export default function AdminDashboardPage() {
             {/* Background Glow */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-pclu-sky-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
             
-            <h2 className="text-xl font-heading font-semibold text-foreground mb-6 flex items-center gap-2 relative z-10">
-              <TrendingUp className="text-pclu-sky-500" size={20} /> System Analytics Overview
-            </h2>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6 relative z-10">
+              <h2 className="text-xl font-heading font-semibold text-foreground flex items-center gap-2">
+                <TrendingUp className="text-pclu-sky-500" size={20} /> System Analytics Overview
+              </h2>
+              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-pclu-sky-500/10 text-pclu-sky-500 border border-pclu-sky-500/20 flex items-center gap-1.5 w-fit">
+                <Calendar size={12} /> Active Tracking (2026)
+              </span>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
               {/* Pie Chart: Employment Status */}
@@ -150,6 +202,16 @@ export default function AdminDashboardPage() {
                 {loading ? (
                   <div className="h-[250px] flex items-center justify-center">
                     <Skeleton className="w-[200px] h-[200px] rounded-full" />
+                  </div>
+                ) : !hasStatusData ? (
+                  <div className="h-[250px] flex flex-col items-center justify-center text-center p-6 border border-dashed border-border rounded-xl bg-muted/20">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
+                      <Briefcase size={20} />
+                    </div>
+                    <p className="text-sm font-medium text-foreground">Awaiting 2026 Career Data</p>
+                    <p className="text-xs text-muted-foreground mt-1 max-w-[220px]">
+                      No active alumni career status records submitted yet for this period.
+                    </p>
                   </div>
                 ) : (
                   <div className="h-[250px]">
@@ -179,14 +241,16 @@ export default function AdminDashboardPage() {
                   </div>
                 )}
                 {/* Custom Legend */}
-                <div className="flex flex-wrap justify-center gap-3 mt-2">
-                  {charts?.employmentStatusBreakdown?.filter(d => d.count > 0).map((entry, index) => (
-                    <div key={entry.label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }} />
-                      {entry.label}
-                    </div>
-                  ))}
-                </div>
+                {hasStatusData && (
+                  <div className="flex flex-wrap justify-center gap-3 mt-2">
+                    {charts?.employmentStatusBreakdown?.filter(d => d.count > 0).map((entry, index) => (
+                      <div key={entry.label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <span className="w-3 h-3 rounded-full" style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }} />
+                        {entry.label} ({entry.count})
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Bar Chart: Employment Rate by Batch */}
@@ -196,21 +260,41 @@ export default function AdminDashboardPage() {
                   <div className="h-[250px] w-full flex items-end gap-2 pb-4">
                     <Skeleton className="w-full h-1/2" /><Skeleton className="w-full h-full" /><Skeleton className="w-full h-3/4" /><Skeleton className="w-full h-1/4" />
                   </div>
+                ) : batchData.length === 0 ? (
+                  <div className="h-[250px] flex flex-col items-center justify-center text-center p-6 border border-dashed border-border rounded-xl bg-muted/20">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
+                      <Award size={20} />
+                    </div>
+                    <p className="text-sm font-medium text-foreground">No Graduate Batches</p>
+                    <p className="text-xs text-muted-foreground mt-1 max-w-[220px]">
+                      No active alumni registered with valid batch cohorts.
+                    </p>
+                  </div>
                 ) : (
                   <div className="h-[250px]">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={charts?.employmentByBatchYear?.slice(-5)}>
+                      <BarChart data={batchData.slice(-6)}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
                         <XAxis dataKey="batch_year" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                        <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${val}%`} />
+                        <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} tickFormatter={(val) => `${val}%`} />
                         <RechartsTooltip 
                           cursor={{ fill: 'hsl(var(--muted)/0.5)' }}
                           contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                          formatter={(value: any, name: any, item: any) => [
+                            `${value}% (${item.payload.employed}/${item.payload.total} alumni)`,
+                            "Employed"
+                          ]}
+                          labelFormatter={(label) => `Batch Cohort ${label}`}
                         />
                         <Bar dataKey="employed_pct" name="Employed %" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
+                )}
+                {batchData.length > 0 && (
+                  <p className="text-[11px] text-center text-muted-foreground mt-2">
+                    Showing latest batch cohorts up to Year 2026 (deduplicated)
+                  </p>
                 )}
               </div>
             </div>
@@ -285,8 +369,10 @@ export default function AdminDashboardPage() {
                       <p className="text-sm font-medium text-foreground truncate">
                         {log.profiles?.full_name || "System"} <span className="font-normal text-muted-foreground">performed</span> {getActionFormat(log.action)}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
+                      <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1.5 flex-wrap">
+                        <span>{formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}</span>
+                        <span className="opacity-40">•</span>
+                        <span className="text-[11px] opacity-75">{format(new Date(log.created_at), "MMM d, yyyy • h:mm a")}</span>
                       </p>
                     </div>
                   </div>

@@ -20,10 +20,11 @@ async function getUserRole(userId: string): Promise<string | null> {
   const supabase = createServiceClient();
   const { data } = await supabase
     .from("profiles")
-    .select("role")
+    .select("role, is_active")
     .eq("id", userId)
-    .single<{ role: string }>();
-  return data?.role ?? null;
+    .single<{ role: string; is_active: boolean }>();
+  if (!data || data.is_active === false) return null;
+  return data.role ?? null;
 }
 
 function getRoleRedirect(role: string): string {

@@ -23,6 +23,20 @@ export async function GET() {
       .order("created_at", { ascending: false });
 
     if (error) throw error;
+
+    // Temporal awareness: auto-expire jobs whose expires_at is in the past
+    const now = new Date();
+    const overdueIds = (data ?? [])
+      .filter((j: any) => j.status === "active" && new Date(j.expires_at) < now)
+      .map((j: any) => j.id);
+
+    if (overdueIds.length > 0) {
+      await (adminClient as any).from("job_postings").update({ status: "expired" }).in("id", overdueIds);
+      data?.forEach((j: any) => {
+        if (overdueIds.includes(j.id)) j.status = "expired";
+      });
+    }
+
     return Response.json({ data });
   } catch (error) {
     console.error("[GET /api/admin/jobs]", error);

@@ -198,11 +198,11 @@ export default function AdminReportsPage() {
 
       {/* Summary Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <StatsCard title="Total Alumni" value={loading ? "—" : data?.summaryStats.totalAlumni ?? 0} icon={Users} color="blue" loading={loading} />
-        <StatsCard title="Employers" value={loading ? "—" : data?.summaryStats.approvedEmployers ?? 0} icon={Building2} color="green" loading={loading} />
-        <StatsCard title="Active Jobs" value={loading ? "—" : data?.summaryStats.activeJobPostings ?? 0} icon={Briefcase} color="amber" loading={loading} />
+        <StatsCard title="Active Alumni" value={loading ? "—" : data?.summaryStats.totalAlumni ?? 0} icon={Users} color="blue" description="Excludes archived" loading={loading} />
+        <StatsCard title="Employers" value={loading ? "—" : data?.summaryStats.approvedEmployers ?? 0} icon={Building2} color="green" description="Active & approved" loading={loading} />
+        <StatsCard title="Active Jobs" value={loading ? "—" : data?.summaryStats.activeJobPostings ?? 0} icon={Briefcase} color="amber" description="Live in 2026" loading={loading} />
         <StatsCard title="Applications" value={loading ? "—" : data?.summaryStats.totalApplications ?? 0} icon={BarChart3} color="purple" loading={loading} />
-        <StatsCard title="Employment Rate" value={loading ? "—" : `${data?.summaryStats.overallEmploymentRate ?? 0}%`} icon={TrendingUp} color="cyan" loading={loading} />
+        <StatsCard title="Employment Rate" value={loading ? "—" : `${data?.summaryStats.overallEmploymentRate ?? 0}%`} icon={TrendingUp} color="cyan" description="Deduplicated cohort" loading={loading} />
       </div>
 
       {/* Charts Row 1 */}

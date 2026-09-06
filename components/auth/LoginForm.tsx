@@ -46,12 +46,12 @@ export function LoginForm() {
       return;
     }
 
-    // Step 2: Fetch the user's role from profiles
+    // Step 2: Fetch the user's role and active status from profiles
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("role")
+      .select("role, is_active")
       .eq("id", auth.user.id)
-      .single<{ role: string }>();
+      .single<{ role: string; is_active: boolean }>();
 
     if (profileError || !profile) {
       // Profile doesn't exist yet — might be a newly created user without a profile row
@@ -60,6 +60,14 @@ export function LoginForm() {
       );
       // Sign them back out to avoid a stuck session
       await supabase.auth.signOut();
+      return;
+    }
+
+    if (!profile.is_active) {
+      await supabase.auth.signOut();
+      setError(
+        "Your account has been archived or deactivated. Please contact the system administrator to restore your account."
+      );
       return;
     }
 
