@@ -46,23 +46,41 @@ model Profile {
 }
 
 // ============================================================
+// ENUMS
+// ============================================================
+enum ClearanceStatus {
+  PENDING
+  SUBMITTED
+  CLEARED
+  REJECTED
+}
+
+// ============================================================
 // ALUMNI — extends profiles
 // ============================================================
 model Alumni {
-  id                String   @id @db.Uuid
-  student_id        String?  @unique
-  course            String
-  major             String?
-  batch_year        Int
-  graduation_year   Int
-  address           String?
-  city              String?
-  province          String?
-  linkedin_url      String?
-  resume_url        String?
-  is_profile_public Boolean  @default(true)
-  created_at        DateTime @default(now()) @db.Timestamptz(6)
-  updated_at        DateTime @updatedAt @db.Timestamptz(6)
+  id                  String          @id @db.Uuid
+  student_id          String?         @unique
+  studentIdNumber     String?         @unique
+  course              String
+  major               String?
+  batch_year          Int
+  graduation_year     Int
+  address             String?
+  city                String?
+  province            String?
+  linkedin_url        String?
+  resume_url          String?
+  is_profile_public   Boolean         @default(true)
+  profileCompleteness Int             @default(0)
+  clearanceStatus     ClearanceStatus @default(PENDING)
+  clearanceRemarks    String?
+  clearanceToken      String?         @unique
+  submittedAt         DateTime?       @db.Timestamptz(6)
+  clearedAt           DateTime?       @db.Timestamptz(6)
+  clearedById         String?         @db.Uuid
+  created_at          DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime        @updatedAt @db.Timestamptz(6)
 
   // Relations
   profile          Profile          @relation(fields: [id], references: [id], onDelete: Cascade)

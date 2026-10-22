@@ -6,9 +6,16 @@ type ApprovalStatus = "pending" | "approved" | "rejected";
 type JobStatus = "pending" | "active" | "expired" | "closed" | "rejected";
 type ApplicationStatus = "pending" | "viewed" | "shortlisted" | "for_interview" | "hired" | "rejected";
 
-type StatusType = EmploymentStatus | ApprovalStatus | JobStatus | ApplicationStatus;
+type StatusType = EmploymentStatus | ApprovalStatus | JobStatus | ApplicationStatus | "PENDING" | "SUBMITTED" | "CLEARED" | "REJECTED" | "pending" | "submitted" | "cleared";
 
 const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
+  // Clearance
+  PENDING:        { label: "Pending Submission", className: "bg-amber-500/15 text-amber-500 border-amber-500/30" },
+  SUBMITTED:      { label: "Under Review",       className: "bg-sky-500/15 text-sky-500 border-sky-500/30" },
+  CLEARED:        { label: "Cleared",            className: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30" },
+  REJECTED:       { label: "Action Required",    className: "bg-red-500/15 text-red-500 border-red-500/30" },
+  submitted:      { label: "Under Review",       className: "bg-sky-500/15 text-sky-500 border-sky-500/30" },
+  cleared:        { label: "Cleared",            className: "bg-emerald-500/15 text-emerald-500 border-emerald-500/30" },
   // Employment
   employed:       { label: "Employed",       className: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" },
   self_employed:  { label: "Self-Employed",  className: "bg-amber-500/15 text-amber-400 border-amber-500/30" },

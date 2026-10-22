@@ -7,6 +7,8 @@ import { sendEmail } from "@/lib/email/send";
 import { welcomeAlumniHtml } from "@/lib/email/templates/welcome-alumni";
 import { logAudit, AUDIT_ACTIONS } from "@/lib/utils/audit";
 
+import { calculateAlumniCompleteness } from "@/lib/utils/clearance";
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -16,7 +18,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: msg }, { status: 400 });
     }
 
-    const { email, password, full_name, student_id, course, batch_year, graduation_year } = parsed.data;
+    const { email, password, full_name, student_id, studentIdNumber, course, batch_year, graduation_year } = parsed.data;
+    const finalStudentId = studentIdNumber || student_id || null;
     const adminClient = createAdminClient();
 
     // 1. Create auth user
@@ -40,10 +43,32 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Failed to create profile" }, { status: 500 });
     }
 
-    // 3. Insert into alumni
+    // Calculate initial profile completeness for graduation clearance
+    const initialProfile = {
+      full_name,
+      email,
+      studentIdNumber: finalStudentId,
+      student_id: finalStudentId,
+      course,
+      batch_year,
+      graduation_year,
+    };
+    const { percentage: initialCompleteness } = calculateAlumniCompleteness(initialProfile, 0);
+
+    // 3. Insert into alumni with clearanceStatus PENDING and initial profileCompleteness
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error: alumniError } = await (adminClient as any).from("alumni").insert({
-      id: userId, student_id: student_id || null, course, batch_year, graduation_year, is_profile_public: true,
+      id: userId,
+      student_id: finalStudentId,
+      studentIdNumber: finalStudentId,
+      course,
+      batch_year,
+      graduation_year,
+      is_profile_public: true,
+      clearanceStatus: "PENDING",
+      clearance_status: "PENDING",
+      profileCompleteness: initialCompleteness,
+      profile_completeness: initialCompleteness,
     });
     if (alumniError) {
       await adminClient.auth.admin.deleteUser(userId);

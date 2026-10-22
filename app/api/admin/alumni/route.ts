@@ -1,7 +1,7 @@
-// app/api/admin/alumni/route.ts
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 
 // GET /api/admin/alumni — list all alumni with latest career record
 export async function GET(request: NextRequest) {
@@ -15,19 +15,24 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get("page") ?? "1");
+    const status = searchParams.get("status") ?? "active";
     const search = searchParams.get("search") ?? "";
     const course = searchParams.get("course") ?? "";
     const batchYear = searchParams.get("batch_year") ?? "";
-    const status = searchParams.get("status") ?? "active"; // "active" | "archived" | "all"
+    const clearanceStatus = searchParams.get("clearance_status") ?? searchParams.get("clearanceStatus") ?? "";
     const pageSize = 20;
     const from = (page - 1) * pageSize;
 
     const adminClient = createAdminClient();
 
-    // Query counts for tabs
-    const [activeRes, archivedRes] = await Promise.all([
+    // Query counts for tabs and clearance KPIs in parallel
+    const [activeRes, archivedRes, pendingCount, submittedCount, clearedCount, rejectedCount] = await Promise.all([
       adminClient.from("alumni").select("id, profiles!inner(is_active)", { count: "exact", head: true }).eq("profiles.is_active", true),
       adminClient.from("alumni").select("id, profiles!inner(is_active)", { count: "exact", head: true }).eq("profiles.is_active", false),
+      prisma.alumni.count({ where: { clearanceStatus: "PENDING" } }),
+      prisma.alumni.count({ where: { clearanceStatus: "SUBMITTED" } }),
+      prisma.alumni.count({ where: { clearanceStatus: "CLEARED" } }),
+      prisma.alumni.count({ where: { clearanceStatus: "REJECTED" } }),
     ]);
 
     const activeCount = activeRes.count ?? 0;
@@ -37,7 +42,8 @@ export async function GET(request: NextRequest) {
     let query = adminClient
       .from("alumni")
       .select(`
-        id, student_id, course, batch_year, graduation_year, city, province, is_profile_public, created_at,
+        id, student_id, studentIdNumber, course, batch_year, graduation_year, city, province, is_profile_public,
+        clearanceStatus, profileCompleteness, clearanceRemarks, clearanceToken, submittedAt, clearedAt, clearedById, created_at,
         profiles!inner(full_name, email, phone, is_verified, is_active),
         career_records(employment_status, employer_name, job_title, is_current)
       `, { count: "exact" });
@@ -47,6 +53,10 @@ export async function GET(request: NextRequest) {
       query = query.eq("profiles.is_active", true);
     } else if (status === "archived") {
       query = query.eq("profiles.is_active", false);
+    }
+
+    if (clearanceStatus) {
+      query = query.eq("clearanceStatus", clearanceStatus);
     }
 
     if (search) {
@@ -70,7 +80,14 @@ export async function GET(request: NextRequest) {
         all: totalCount,
         active: activeCount,
         archived: archivedCount,
-      }
+      },
+      clearanceKPIs: {
+        total: activeCount,
+        pending: pendingCount,
+        submitted: submittedCount,
+        cleared: clearedCount,
+        rejected: rejectedCount,
+      },
     });
   } catch (error) {
     console.error("[GET /api/admin/alumni]", error);

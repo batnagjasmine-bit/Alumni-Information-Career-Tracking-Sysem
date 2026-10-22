@@ -70,6 +70,25 @@ export type Conversation = $Result.DefaultSelection<Prisma.$ConversationPayload>
 export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const ClearanceStatus: {
+  PENDING: 'PENDING',
+  SUBMITTED: 'SUBMITTED',
+  CLEARED: 'CLEARED',
+  REJECTED: 'REJECTED'
+};
+
+export type ClearanceStatus = (typeof ClearanceStatus)[keyof typeof ClearanceStatus]
+
+}
+
+export type ClearanceStatus = $Enums.ClearanceStatus
+
+export const ClearanceStatus: typeof $Enums.ClearanceStatus
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -3401,16 +3420,19 @@ export namespace Prisma {
   export type AlumniAvgAggregateOutputType = {
     batch_year: number | null
     graduation_year: number | null
+    profileCompleteness: number | null
   }
 
   export type AlumniSumAggregateOutputType = {
     batch_year: number | null
     graduation_year: number | null
+    profileCompleteness: number | null
   }
 
   export type AlumniMinAggregateOutputType = {
     id: string | null
     student_id: string | null
+    studentIdNumber: string | null
     course: string | null
     major: string | null
     batch_year: number | null
@@ -3421,6 +3443,13 @@ export namespace Prisma {
     linkedin_url: string | null
     resume_url: string | null
     is_profile_public: boolean | null
+    profileCompleteness: number | null
+    clearanceStatus: $Enums.ClearanceStatus | null
+    clearanceRemarks: string | null
+    clearanceToken: string | null
+    submittedAt: Date | null
+    clearedAt: Date | null
+    clearedById: string | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -3428,6 +3457,7 @@ export namespace Prisma {
   export type AlumniMaxAggregateOutputType = {
     id: string | null
     student_id: string | null
+    studentIdNumber: string | null
     course: string | null
     major: string | null
     batch_year: number | null
@@ -3438,6 +3468,13 @@ export namespace Prisma {
     linkedin_url: string | null
     resume_url: string | null
     is_profile_public: boolean | null
+    profileCompleteness: number | null
+    clearanceStatus: $Enums.ClearanceStatus | null
+    clearanceRemarks: string | null
+    clearanceToken: string | null
+    submittedAt: Date | null
+    clearedAt: Date | null
+    clearedById: string | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -3445,6 +3482,7 @@ export namespace Prisma {
   export type AlumniCountAggregateOutputType = {
     id: number
     student_id: number
+    studentIdNumber: number
     course: number
     major: number
     batch_year: number
@@ -3455,6 +3493,13 @@ export namespace Prisma {
     linkedin_url: number
     resume_url: number
     is_profile_public: number
+    profileCompleteness: number
+    clearanceStatus: number
+    clearanceRemarks: number
+    clearanceToken: number
+    submittedAt: number
+    clearedAt: number
+    clearedById: number
     created_at: number
     updated_at: number
     _all: number
@@ -3464,16 +3509,19 @@ export namespace Prisma {
   export type AlumniAvgAggregateInputType = {
     batch_year?: true
     graduation_year?: true
+    profileCompleteness?: true
   }
 
   export type AlumniSumAggregateInputType = {
     batch_year?: true
     graduation_year?: true
+    profileCompleteness?: true
   }
 
   export type AlumniMinAggregateInputType = {
     id?: true
     student_id?: true
+    studentIdNumber?: true
     course?: true
     major?: true
     batch_year?: true
@@ -3484,6 +3532,13 @@ export namespace Prisma {
     linkedin_url?: true
     resume_url?: true
     is_profile_public?: true
+    profileCompleteness?: true
+    clearanceStatus?: true
+    clearanceRemarks?: true
+    clearanceToken?: true
+    submittedAt?: true
+    clearedAt?: true
+    clearedById?: true
     created_at?: true
     updated_at?: true
   }
@@ -3491,6 +3546,7 @@ export namespace Prisma {
   export type AlumniMaxAggregateInputType = {
     id?: true
     student_id?: true
+    studentIdNumber?: true
     course?: true
     major?: true
     batch_year?: true
@@ -3501,6 +3557,13 @@ export namespace Prisma {
     linkedin_url?: true
     resume_url?: true
     is_profile_public?: true
+    profileCompleteness?: true
+    clearanceStatus?: true
+    clearanceRemarks?: true
+    clearanceToken?: true
+    submittedAt?: true
+    clearedAt?: true
+    clearedById?: true
     created_at?: true
     updated_at?: true
   }
@@ -3508,6 +3571,7 @@ export namespace Prisma {
   export type AlumniCountAggregateInputType = {
     id?: true
     student_id?: true
+    studentIdNumber?: true
     course?: true
     major?: true
     batch_year?: true
@@ -3518,6 +3582,13 @@ export namespace Prisma {
     linkedin_url?: true
     resume_url?: true
     is_profile_public?: true
+    profileCompleteness?: true
+    clearanceStatus?: true
+    clearanceRemarks?: true
+    clearanceToken?: true
+    submittedAt?: true
+    clearedAt?: true
+    clearedById?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -3612,6 +3683,7 @@ export namespace Prisma {
   export type AlumniGroupByOutputType = {
     id: string
     student_id: string | null
+    studentIdNumber: string | null
     course: string
     major: string | null
     batch_year: number
@@ -3622,6 +3694,13 @@ export namespace Prisma {
     linkedin_url: string | null
     resume_url: string | null
     is_profile_public: boolean
+    profileCompleteness: number
+    clearanceStatus: $Enums.ClearanceStatus
+    clearanceRemarks: string | null
+    clearanceToken: string | null
+    submittedAt: Date | null
+    clearedAt: Date | null
+    clearedById: string | null
     created_at: Date
     updated_at: Date
     _count: AlumniCountAggregateOutputType | null
@@ -3648,6 +3727,7 @@ export namespace Prisma {
   export type AlumniSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     student_id?: boolean
+    studentIdNumber?: boolean
     course?: boolean
     major?: boolean
     batch_year?: boolean
@@ -3658,6 +3738,13 @@ export namespace Prisma {
     linkedin_url?: boolean
     resume_url?: boolean
     is_profile_public?: boolean
+    profileCompleteness?: boolean
+    clearanceStatus?: boolean
+    clearanceRemarks?: boolean
+    clearanceToken?: boolean
+    submittedAt?: boolean
+    clearedAt?: boolean
+    clearedById?: boolean
     created_at?: boolean
     updated_at?: boolean
     profile?: boolean | ProfileDefaultArgs<ExtArgs>
@@ -3669,6 +3756,7 @@ export namespace Prisma {
   export type AlumniSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     student_id?: boolean
+    studentIdNumber?: boolean
     course?: boolean
     major?: boolean
     batch_year?: boolean
@@ -3679,6 +3767,13 @@ export namespace Prisma {
     linkedin_url?: boolean
     resume_url?: boolean
     is_profile_public?: boolean
+    profileCompleteness?: boolean
+    clearanceStatus?: boolean
+    clearanceRemarks?: boolean
+    clearanceToken?: boolean
+    submittedAt?: boolean
+    clearedAt?: boolean
+    clearedById?: boolean
     created_at?: boolean
     updated_at?: boolean
     profile?: boolean | ProfileDefaultArgs<ExtArgs>
@@ -3687,6 +3782,7 @@ export namespace Prisma {
   export type AlumniSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     student_id?: boolean
+    studentIdNumber?: boolean
     course?: boolean
     major?: boolean
     batch_year?: boolean
@@ -3697,6 +3793,13 @@ export namespace Prisma {
     linkedin_url?: boolean
     resume_url?: boolean
     is_profile_public?: boolean
+    profileCompleteness?: boolean
+    clearanceStatus?: boolean
+    clearanceRemarks?: boolean
+    clearanceToken?: boolean
+    submittedAt?: boolean
+    clearedAt?: boolean
+    clearedById?: boolean
     created_at?: boolean
     updated_at?: boolean
     profile?: boolean | ProfileDefaultArgs<ExtArgs>
@@ -3705,6 +3808,7 @@ export namespace Prisma {
   export type AlumniSelectScalar = {
     id?: boolean
     student_id?: boolean
+    studentIdNumber?: boolean
     course?: boolean
     major?: boolean
     batch_year?: boolean
@@ -3715,11 +3819,18 @@ export namespace Prisma {
     linkedin_url?: boolean
     resume_url?: boolean
     is_profile_public?: boolean
+    profileCompleteness?: boolean
+    clearanceStatus?: boolean
+    clearanceRemarks?: boolean
+    clearanceToken?: boolean
+    submittedAt?: boolean
+    clearedAt?: boolean
+    clearedById?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type AlumniOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "student_id" | "course" | "major" | "batch_year" | "graduation_year" | "address" | "city" | "province" | "linkedin_url" | "resume_url" | "is_profile_public" | "created_at" | "updated_at", ExtArgs["result"]["alumni"]>
+  export type AlumniOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "student_id" | "studentIdNumber" | "course" | "major" | "batch_year" | "graduation_year" | "address" | "city" | "province" | "linkedin_url" | "resume_url" | "is_profile_public" | "profileCompleteness" | "clearanceStatus" | "clearanceRemarks" | "clearanceToken" | "submittedAt" | "clearedAt" | "clearedById" | "created_at" | "updated_at", ExtArgs["result"]["alumni"]>
   export type AlumniInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     profile?: boolean | ProfileDefaultArgs<ExtArgs>
     career_records?: boolean | Alumni$career_recordsArgs<ExtArgs>
@@ -3743,6 +3854,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       student_id: string | null
+      studentIdNumber: string | null
       course: string
       major: string | null
       batch_year: number
@@ -3753,6 +3865,13 @@ export namespace Prisma {
       linkedin_url: string | null
       resume_url: string | null
       is_profile_public: boolean
+      profileCompleteness: number
+      clearanceStatus: $Enums.ClearanceStatus
+      clearanceRemarks: string | null
+      clearanceToken: string | null
+      submittedAt: Date | null
+      clearedAt: Date | null
+      clearedById: string | null
       created_at: Date
       updated_at: Date
     }, ExtArgs["result"]["alumni"]>
@@ -4183,6 +4302,7 @@ export namespace Prisma {
   interface AlumniFieldRefs {
     readonly id: FieldRef<"Alumni", 'String'>
     readonly student_id: FieldRef<"Alumni", 'String'>
+    readonly studentIdNumber: FieldRef<"Alumni", 'String'>
     readonly course: FieldRef<"Alumni", 'String'>
     readonly major: FieldRef<"Alumni", 'String'>
     readonly batch_year: FieldRef<"Alumni", 'Int'>
@@ -4193,6 +4313,13 @@ export namespace Prisma {
     readonly linkedin_url: FieldRef<"Alumni", 'String'>
     readonly resume_url: FieldRef<"Alumni", 'String'>
     readonly is_profile_public: FieldRef<"Alumni", 'Boolean'>
+    readonly profileCompleteness: FieldRef<"Alumni", 'Int'>
+    readonly clearanceStatus: FieldRef<"Alumni", 'ClearanceStatus'>
+    readonly clearanceRemarks: FieldRef<"Alumni", 'String'>
+    readonly clearanceToken: FieldRef<"Alumni", 'String'>
+    readonly submittedAt: FieldRef<"Alumni", 'DateTime'>
+    readonly clearedAt: FieldRef<"Alumni", 'DateTime'>
+    readonly clearedById: FieldRef<"Alumni", 'String'>
     readonly created_at: FieldRef<"Alumni", 'DateTime'>
     readonly updated_at: FieldRef<"Alumni", 'DateTime'>
   }
@@ -15196,6 +15323,7 @@ export namespace Prisma {
   export const AlumniScalarFieldEnum: {
     id: 'id',
     student_id: 'student_id',
+    studentIdNumber: 'studentIdNumber',
     course: 'course',
     major: 'major',
     batch_year: 'batch_year',
@@ -15206,6 +15334,13 @@ export namespace Prisma {
     linkedin_url: 'linkedin_url',
     resume_url: 'resume_url',
     is_profile_public: 'is_profile_public',
+    profileCompleteness: 'profileCompleteness',
+    clearanceStatus: 'clearanceStatus',
+    clearanceRemarks: 'clearanceRemarks',
+    clearanceToken: 'clearanceToken',
+    submittedAt: 'submittedAt',
+    clearedAt: 'clearedAt',
+    clearedById: 'clearedById',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -15465,6 +15600,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'ClearanceStatus'
+   */
+  export type EnumClearanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClearanceStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ClearanceStatus[]'
+   */
+  export type ListEnumClearanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClearanceStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Decimal'
    */
   export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -15634,6 +15783,7 @@ export namespace Prisma {
     NOT?: AlumniWhereInput | AlumniWhereInput[]
     id?: UuidFilter<"Alumni"> | string
     student_id?: StringNullableFilter<"Alumni"> | string | null
+    studentIdNumber?: StringNullableFilter<"Alumni"> | string | null
     course?: StringFilter<"Alumni"> | string
     major?: StringNullableFilter<"Alumni"> | string | null
     batch_year?: IntFilter<"Alumni"> | number
@@ -15644,6 +15794,13 @@ export namespace Prisma {
     linkedin_url?: StringNullableFilter<"Alumni"> | string | null
     resume_url?: StringNullableFilter<"Alumni"> | string | null
     is_profile_public?: BoolFilter<"Alumni"> | boolean
+    profileCompleteness?: IntFilter<"Alumni"> | number
+    clearanceStatus?: EnumClearanceStatusFilter<"Alumni"> | $Enums.ClearanceStatus
+    clearanceRemarks?: StringNullableFilter<"Alumni"> | string | null
+    clearanceToken?: StringNullableFilter<"Alumni"> | string | null
+    submittedAt?: DateTimeNullableFilter<"Alumni"> | Date | string | null
+    clearedAt?: DateTimeNullableFilter<"Alumni"> | Date | string | null
+    clearedById?: UuidNullableFilter<"Alumni"> | string | null
     created_at?: DateTimeFilter<"Alumni"> | Date | string
     updated_at?: DateTimeFilter<"Alumni"> | Date | string
     profile?: XOR<ProfileScalarRelationFilter, ProfileWhereInput>
@@ -15654,6 +15811,7 @@ export namespace Prisma {
   export type AlumniOrderByWithRelationInput = {
     id?: SortOrder
     student_id?: SortOrderInput | SortOrder
+    studentIdNumber?: SortOrderInput | SortOrder
     course?: SortOrder
     major?: SortOrderInput | SortOrder
     batch_year?: SortOrder
@@ -15664,6 +15822,13 @@ export namespace Prisma {
     linkedin_url?: SortOrderInput | SortOrder
     resume_url?: SortOrderInput | SortOrder
     is_profile_public?: SortOrder
+    profileCompleteness?: SortOrder
+    clearanceStatus?: SortOrder
+    clearanceRemarks?: SortOrderInput | SortOrder
+    clearanceToken?: SortOrderInput | SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    clearedAt?: SortOrderInput | SortOrder
+    clearedById?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     profile?: ProfileOrderByWithRelationInput
@@ -15674,6 +15839,8 @@ export namespace Prisma {
   export type AlumniWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     student_id?: string
+    studentIdNumber?: string
+    clearanceToken?: string
     AND?: AlumniWhereInput | AlumniWhereInput[]
     OR?: AlumniWhereInput[]
     NOT?: AlumniWhereInput | AlumniWhereInput[]
@@ -15687,16 +15854,23 @@ export namespace Prisma {
     linkedin_url?: StringNullableFilter<"Alumni"> | string | null
     resume_url?: StringNullableFilter<"Alumni"> | string | null
     is_profile_public?: BoolFilter<"Alumni"> | boolean
+    profileCompleteness?: IntFilter<"Alumni"> | number
+    clearanceStatus?: EnumClearanceStatusFilter<"Alumni"> | $Enums.ClearanceStatus
+    clearanceRemarks?: StringNullableFilter<"Alumni"> | string | null
+    submittedAt?: DateTimeNullableFilter<"Alumni"> | Date | string | null
+    clearedAt?: DateTimeNullableFilter<"Alumni"> | Date | string | null
+    clearedById?: UuidNullableFilter<"Alumni"> | string | null
     created_at?: DateTimeFilter<"Alumni"> | Date | string
     updated_at?: DateTimeFilter<"Alumni"> | Date | string
     profile?: XOR<ProfileScalarRelationFilter, ProfileWhereInput>
     career_records?: CareerRecordListRelationFilter
     job_applications?: JobApplicationListRelationFilter
-  }, "id" | "student_id">
+  }, "id" | "student_id" | "studentIdNumber" | "clearanceToken">
 
   export type AlumniOrderByWithAggregationInput = {
     id?: SortOrder
     student_id?: SortOrderInput | SortOrder
+    studentIdNumber?: SortOrderInput | SortOrder
     course?: SortOrder
     major?: SortOrderInput | SortOrder
     batch_year?: SortOrder
@@ -15707,6 +15881,13 @@ export namespace Prisma {
     linkedin_url?: SortOrderInput | SortOrder
     resume_url?: SortOrderInput | SortOrder
     is_profile_public?: SortOrder
+    profileCompleteness?: SortOrder
+    clearanceStatus?: SortOrder
+    clearanceRemarks?: SortOrderInput | SortOrder
+    clearanceToken?: SortOrderInput | SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    clearedAt?: SortOrderInput | SortOrder
+    clearedById?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: AlumniCountOrderByAggregateInput
@@ -15722,6 +15903,7 @@ export namespace Prisma {
     NOT?: AlumniScalarWhereWithAggregatesInput | AlumniScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"Alumni"> | string
     student_id?: StringNullableWithAggregatesFilter<"Alumni"> | string | null
+    studentIdNumber?: StringNullableWithAggregatesFilter<"Alumni"> | string | null
     course?: StringWithAggregatesFilter<"Alumni"> | string
     major?: StringNullableWithAggregatesFilter<"Alumni"> | string | null
     batch_year?: IntWithAggregatesFilter<"Alumni"> | number
@@ -15732,6 +15914,13 @@ export namespace Prisma {
     linkedin_url?: StringNullableWithAggregatesFilter<"Alumni"> | string | null
     resume_url?: StringNullableWithAggregatesFilter<"Alumni"> | string | null
     is_profile_public?: BoolWithAggregatesFilter<"Alumni"> | boolean
+    profileCompleteness?: IntWithAggregatesFilter<"Alumni"> | number
+    clearanceStatus?: EnumClearanceStatusWithAggregatesFilter<"Alumni"> | $Enums.ClearanceStatus
+    clearanceRemarks?: StringNullableWithAggregatesFilter<"Alumni"> | string | null
+    clearanceToken?: StringNullableWithAggregatesFilter<"Alumni"> | string | null
+    submittedAt?: DateTimeNullableWithAggregatesFilter<"Alumni"> | Date | string | null
+    clearedAt?: DateTimeNullableWithAggregatesFilter<"Alumni"> | Date | string | null
+    clearedById?: UuidNullableWithAggregatesFilter<"Alumni"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"Alumni"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Alumni"> | Date | string
   }
@@ -16691,6 +16880,7 @@ export namespace Prisma {
 
   export type AlumniCreateInput = {
     student_id?: string | null
+    studentIdNumber?: string | null
     course: string
     major?: string | null
     batch_year: number
@@ -16701,6 +16891,13 @@ export namespace Prisma {
     linkedin_url?: string | null
     resume_url?: string | null
     is_profile_public?: boolean
+    profileCompleteness?: number
+    clearanceStatus?: $Enums.ClearanceStatus
+    clearanceRemarks?: string | null
+    clearanceToken?: string | null
+    submittedAt?: Date | string | null
+    clearedAt?: Date | string | null
+    clearedById?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     profile: ProfileCreateNestedOneWithoutAlumniInput
@@ -16711,6 +16908,7 @@ export namespace Prisma {
   export type AlumniUncheckedCreateInput = {
     id: string
     student_id?: string | null
+    studentIdNumber?: string | null
     course: string
     major?: string | null
     batch_year: number
@@ -16721,6 +16919,13 @@ export namespace Prisma {
     linkedin_url?: string | null
     resume_url?: string | null
     is_profile_public?: boolean
+    profileCompleteness?: number
+    clearanceStatus?: $Enums.ClearanceStatus
+    clearanceRemarks?: string | null
+    clearanceToken?: string | null
+    submittedAt?: Date | string | null
+    clearedAt?: Date | string | null
+    clearedById?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     career_records?: CareerRecordUncheckedCreateNestedManyWithoutAlumniInput
@@ -16729,6 +16934,7 @@ export namespace Prisma {
 
   export type AlumniUpdateInput = {
     student_id?: NullableStringFieldUpdateOperationsInput | string | null
+    studentIdNumber?: NullableStringFieldUpdateOperationsInput | string | null
     course?: StringFieldUpdateOperationsInput | string
     major?: NullableStringFieldUpdateOperationsInput | string | null
     batch_year?: IntFieldUpdateOperationsInput | number
@@ -16739,6 +16945,13 @@ export namespace Prisma {
     linkedin_url?: NullableStringFieldUpdateOperationsInput | string | null
     resume_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_profile_public?: BoolFieldUpdateOperationsInput | boolean
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
+    clearanceStatus?: EnumClearanceStatusFieldUpdateOperationsInput | $Enums.ClearanceStatus
+    clearanceRemarks?: NullableStringFieldUpdateOperationsInput | string | null
+    clearanceToken?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedById?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     profile?: ProfileUpdateOneRequiredWithoutAlumniNestedInput
@@ -16749,6 +16962,7 @@ export namespace Prisma {
   export type AlumniUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     student_id?: NullableStringFieldUpdateOperationsInput | string | null
+    studentIdNumber?: NullableStringFieldUpdateOperationsInput | string | null
     course?: StringFieldUpdateOperationsInput | string
     major?: NullableStringFieldUpdateOperationsInput | string | null
     batch_year?: IntFieldUpdateOperationsInput | number
@@ -16759,6 +16973,13 @@ export namespace Prisma {
     linkedin_url?: NullableStringFieldUpdateOperationsInput | string | null
     resume_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_profile_public?: BoolFieldUpdateOperationsInput | boolean
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
+    clearanceStatus?: EnumClearanceStatusFieldUpdateOperationsInput | $Enums.ClearanceStatus
+    clearanceRemarks?: NullableStringFieldUpdateOperationsInput | string | null
+    clearanceToken?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedById?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     career_records?: CareerRecordUncheckedUpdateManyWithoutAlumniNestedInput
@@ -16768,6 +16989,7 @@ export namespace Prisma {
   export type AlumniCreateManyInput = {
     id: string
     student_id?: string | null
+    studentIdNumber?: string | null
     course: string
     major?: string | null
     batch_year: number
@@ -16778,12 +17000,20 @@ export namespace Prisma {
     linkedin_url?: string | null
     resume_url?: string | null
     is_profile_public?: boolean
+    profileCompleteness?: number
+    clearanceStatus?: $Enums.ClearanceStatus
+    clearanceRemarks?: string | null
+    clearanceToken?: string | null
+    submittedAt?: Date | string | null
+    clearedAt?: Date | string | null
+    clearedById?: string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
 
   export type AlumniUpdateManyMutationInput = {
     student_id?: NullableStringFieldUpdateOperationsInput | string | null
+    studentIdNumber?: NullableStringFieldUpdateOperationsInput | string | null
     course?: StringFieldUpdateOperationsInput | string
     major?: NullableStringFieldUpdateOperationsInput | string | null
     batch_year?: IntFieldUpdateOperationsInput | number
@@ -16794,6 +17024,13 @@ export namespace Prisma {
     linkedin_url?: NullableStringFieldUpdateOperationsInput | string | null
     resume_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_profile_public?: BoolFieldUpdateOperationsInput | boolean
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
+    clearanceStatus?: EnumClearanceStatusFieldUpdateOperationsInput | $Enums.ClearanceStatus
+    clearanceRemarks?: NullableStringFieldUpdateOperationsInput | string | null
+    clearanceToken?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedById?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -16801,6 +17038,7 @@ export namespace Prisma {
   export type AlumniUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     student_id?: NullableStringFieldUpdateOperationsInput | string | null
+    studentIdNumber?: NullableStringFieldUpdateOperationsInput | string | null
     course?: StringFieldUpdateOperationsInput | string
     major?: NullableStringFieldUpdateOperationsInput | string | null
     batch_year?: IntFieldUpdateOperationsInput | number
@@ -16811,6 +17049,13 @@ export namespace Prisma {
     linkedin_url?: NullableStringFieldUpdateOperationsInput | string | null
     resume_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_profile_public?: BoolFieldUpdateOperationsInput | boolean
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
+    clearanceStatus?: EnumClearanceStatusFieldUpdateOperationsInput | $Enums.ClearanceStatus
+    clearanceRemarks?: NullableStringFieldUpdateOperationsInput | string | null
+    clearanceToken?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedById?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -18007,6 +18252,25 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type EnumClearanceStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ClearanceStatus | EnumClearanceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ClearanceStatus[] | ListEnumClearanceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClearanceStatus[] | ListEnumClearanceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumClearanceStatusFilter<$PrismaModel> | $Enums.ClearanceStatus
+  }
+
+  export type UuidNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+  }
+
   export type ProfileScalarRelationFilter = {
     is?: ProfileWhereInput
     isNot?: ProfileWhereInput
@@ -18035,6 +18299,7 @@ export namespace Prisma {
   export type AlumniCountOrderByAggregateInput = {
     id?: SortOrder
     student_id?: SortOrder
+    studentIdNumber?: SortOrder
     course?: SortOrder
     major?: SortOrder
     batch_year?: SortOrder
@@ -18045,6 +18310,13 @@ export namespace Prisma {
     linkedin_url?: SortOrder
     resume_url?: SortOrder
     is_profile_public?: SortOrder
+    profileCompleteness?: SortOrder
+    clearanceStatus?: SortOrder
+    clearanceRemarks?: SortOrder
+    clearanceToken?: SortOrder
+    submittedAt?: SortOrder
+    clearedAt?: SortOrder
+    clearedById?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -18052,11 +18324,13 @@ export namespace Prisma {
   export type AlumniAvgOrderByAggregateInput = {
     batch_year?: SortOrder
     graduation_year?: SortOrder
+    profileCompleteness?: SortOrder
   }
 
   export type AlumniMaxOrderByAggregateInput = {
     id?: SortOrder
     student_id?: SortOrder
+    studentIdNumber?: SortOrder
     course?: SortOrder
     major?: SortOrder
     batch_year?: SortOrder
@@ -18067,6 +18341,13 @@ export namespace Prisma {
     linkedin_url?: SortOrder
     resume_url?: SortOrder
     is_profile_public?: SortOrder
+    profileCompleteness?: SortOrder
+    clearanceStatus?: SortOrder
+    clearanceRemarks?: SortOrder
+    clearanceToken?: SortOrder
+    submittedAt?: SortOrder
+    clearedAt?: SortOrder
+    clearedById?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -18074,6 +18355,7 @@ export namespace Prisma {
   export type AlumniMinOrderByAggregateInput = {
     id?: SortOrder
     student_id?: SortOrder
+    studentIdNumber?: SortOrder
     course?: SortOrder
     major?: SortOrder
     batch_year?: SortOrder
@@ -18084,6 +18366,13 @@ export namespace Prisma {
     linkedin_url?: SortOrder
     resume_url?: SortOrder
     is_profile_public?: SortOrder
+    profileCompleteness?: SortOrder
+    clearanceStatus?: SortOrder
+    clearanceRemarks?: SortOrder
+    clearanceToken?: SortOrder
+    submittedAt?: SortOrder
+    clearedAt?: SortOrder
+    clearedById?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -18091,6 +18380,7 @@ export namespace Prisma {
   export type AlumniSumOrderByAggregateInput = {
     batch_year?: SortOrder
     graduation_year?: SortOrder
+    profileCompleteness?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -18109,7 +18399,17 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type UuidNullableFilter<$PrismaModel = never> = {
+  export type EnumClearanceStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ClearanceStatus | EnumClearanceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ClearanceStatus[] | ListEnumClearanceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClearanceStatus[] | ListEnumClearanceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumClearanceStatusWithAggregatesFilter<$PrismaModel> | $Enums.ClearanceStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumClearanceStatusFilter<$PrismaModel>
+    _max?: NestedEnumClearanceStatusFilter<$PrismaModel>
+  }
+
+  export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -18118,7 +18418,10 @@ export namespace Prisma {
     gt?: string | StringFieldRefInput<$PrismaModel>
     gte?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
-    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type ProfileNullableScalarRelationFilter = {
@@ -18191,21 +18494,6 @@ export namespace Prisma {
     approved_by?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
-  }
-
-  export type UuidNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedUuidNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type AlumniScalarRelationFilter = {
@@ -19078,6 +19366,10 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type EnumClearanceStatusFieldUpdateOperationsInput = {
+    set?: $Enums.ClearanceStatus
+  }
+
   export type ProfileUpdateOneRequiredWithoutAlumniNestedInput = {
     create?: XOR<ProfileCreateWithoutAlumniInput, ProfileUncheckedCreateWithoutAlumniInput>
     connectOrCreate?: ProfileCreateOrConnectWithoutAlumniInput
@@ -19643,6 +19935,24 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumClearanceStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.ClearanceStatus | EnumClearanceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ClearanceStatus[] | ListEnumClearanceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClearanceStatus[] | ListEnumClearanceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumClearanceStatusFilter<$PrismaModel> | $Enums.ClearanceStatus
+  }
+
+  export type NestedUuidNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -19670,15 +19980,14 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type NestedUuidNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedUuidNullableFilter<$PrismaModel> | string | null
+  export type NestedEnumClearanceStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ClearanceStatus | EnumClearanceStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.ClearanceStatus[] | ListEnumClearanceStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClearanceStatus[] | ListEnumClearanceStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumClearanceStatusWithAggregatesFilter<$PrismaModel> | $Enums.ClearanceStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumClearanceStatusFilter<$PrismaModel>
+    _max?: NestedEnumClearanceStatusFilter<$PrismaModel>
   }
 
   export type NestedUuidNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -19747,6 +20056,7 @@ export namespace Prisma {
 
   export type AlumniCreateWithoutProfileInput = {
     student_id?: string | null
+    studentIdNumber?: string | null
     course: string
     major?: string | null
     batch_year: number
@@ -19757,6 +20067,13 @@ export namespace Prisma {
     linkedin_url?: string | null
     resume_url?: string | null
     is_profile_public?: boolean
+    profileCompleteness?: number
+    clearanceStatus?: $Enums.ClearanceStatus
+    clearanceRemarks?: string | null
+    clearanceToken?: string | null
+    submittedAt?: Date | string | null
+    clearedAt?: Date | string | null
+    clearedById?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     career_records?: CareerRecordCreateNestedManyWithoutAlumniInput
@@ -19765,6 +20082,7 @@ export namespace Prisma {
 
   export type AlumniUncheckedCreateWithoutProfileInput = {
     student_id?: string | null
+    studentIdNumber?: string | null
     course: string
     major?: string | null
     batch_year: number
@@ -19775,6 +20093,13 @@ export namespace Prisma {
     linkedin_url?: string | null
     resume_url?: string | null
     is_profile_public?: boolean
+    profileCompleteness?: number
+    clearanceStatus?: $Enums.ClearanceStatus
+    clearanceRemarks?: string | null
+    clearanceToken?: string | null
+    submittedAt?: Date | string | null
+    clearedAt?: Date | string | null
+    clearedById?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     career_records?: CareerRecordUncheckedCreateNestedManyWithoutAlumniInput
@@ -20070,6 +20395,7 @@ export namespace Prisma {
 
   export type AlumniUpdateWithoutProfileInput = {
     student_id?: NullableStringFieldUpdateOperationsInput | string | null
+    studentIdNumber?: NullableStringFieldUpdateOperationsInput | string | null
     course?: StringFieldUpdateOperationsInput | string
     major?: NullableStringFieldUpdateOperationsInput | string | null
     batch_year?: IntFieldUpdateOperationsInput | number
@@ -20080,6 +20406,13 @@ export namespace Prisma {
     linkedin_url?: NullableStringFieldUpdateOperationsInput | string | null
     resume_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_profile_public?: BoolFieldUpdateOperationsInput | boolean
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
+    clearanceStatus?: EnumClearanceStatusFieldUpdateOperationsInput | $Enums.ClearanceStatus
+    clearanceRemarks?: NullableStringFieldUpdateOperationsInput | string | null
+    clearanceToken?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedById?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     career_records?: CareerRecordUpdateManyWithoutAlumniNestedInput
@@ -20088,6 +20421,7 @@ export namespace Prisma {
 
   export type AlumniUncheckedUpdateWithoutProfileInput = {
     student_id?: NullableStringFieldUpdateOperationsInput | string | null
+    studentIdNumber?: NullableStringFieldUpdateOperationsInput | string | null
     course?: StringFieldUpdateOperationsInput | string
     major?: NullableStringFieldUpdateOperationsInput | string | null
     batch_year?: IntFieldUpdateOperationsInput | number
@@ -20098,6 +20432,13 @@ export namespace Prisma {
     linkedin_url?: NullableStringFieldUpdateOperationsInput | string | null
     resume_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_profile_public?: BoolFieldUpdateOperationsInput | boolean
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
+    clearanceStatus?: EnumClearanceStatusFieldUpdateOperationsInput | $Enums.ClearanceStatus
+    clearanceRemarks?: NullableStringFieldUpdateOperationsInput | string | null
+    clearanceToken?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedById?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     career_records?: CareerRecordUncheckedUpdateManyWithoutAlumniNestedInput
@@ -20941,6 +21282,7 @@ export namespace Prisma {
 
   export type AlumniCreateWithoutCareer_recordsInput = {
     student_id?: string | null
+    studentIdNumber?: string | null
     course: string
     major?: string | null
     batch_year: number
@@ -20951,6 +21293,13 @@ export namespace Prisma {
     linkedin_url?: string | null
     resume_url?: string | null
     is_profile_public?: boolean
+    profileCompleteness?: number
+    clearanceStatus?: $Enums.ClearanceStatus
+    clearanceRemarks?: string | null
+    clearanceToken?: string | null
+    submittedAt?: Date | string | null
+    clearedAt?: Date | string | null
+    clearedById?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     profile: ProfileCreateNestedOneWithoutAlumniInput
@@ -20960,6 +21309,7 @@ export namespace Prisma {
   export type AlumniUncheckedCreateWithoutCareer_recordsInput = {
     id: string
     student_id?: string | null
+    studentIdNumber?: string | null
     course: string
     major?: string | null
     batch_year: number
@@ -20970,6 +21320,13 @@ export namespace Prisma {
     linkedin_url?: string | null
     resume_url?: string | null
     is_profile_public?: boolean
+    profileCompleteness?: number
+    clearanceStatus?: $Enums.ClearanceStatus
+    clearanceRemarks?: string | null
+    clearanceToken?: string | null
+    submittedAt?: Date | string | null
+    clearedAt?: Date | string | null
+    clearedById?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     job_applications?: JobApplicationUncheckedCreateNestedManyWithoutAlumniInput
@@ -20993,6 +21350,7 @@ export namespace Prisma {
 
   export type AlumniUpdateWithoutCareer_recordsInput = {
     student_id?: NullableStringFieldUpdateOperationsInput | string | null
+    studentIdNumber?: NullableStringFieldUpdateOperationsInput | string | null
     course?: StringFieldUpdateOperationsInput | string
     major?: NullableStringFieldUpdateOperationsInput | string | null
     batch_year?: IntFieldUpdateOperationsInput | number
@@ -21003,6 +21361,13 @@ export namespace Prisma {
     linkedin_url?: NullableStringFieldUpdateOperationsInput | string | null
     resume_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_profile_public?: BoolFieldUpdateOperationsInput | boolean
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
+    clearanceStatus?: EnumClearanceStatusFieldUpdateOperationsInput | $Enums.ClearanceStatus
+    clearanceRemarks?: NullableStringFieldUpdateOperationsInput | string | null
+    clearanceToken?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedById?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     profile?: ProfileUpdateOneRequiredWithoutAlumniNestedInput
@@ -21012,6 +21377,7 @@ export namespace Prisma {
   export type AlumniUncheckedUpdateWithoutCareer_recordsInput = {
     id?: StringFieldUpdateOperationsInput | string
     student_id?: NullableStringFieldUpdateOperationsInput | string | null
+    studentIdNumber?: NullableStringFieldUpdateOperationsInput | string | null
     course?: StringFieldUpdateOperationsInput | string
     major?: NullableStringFieldUpdateOperationsInput | string | null
     batch_year?: IntFieldUpdateOperationsInput | number
@@ -21022,6 +21388,13 @@ export namespace Prisma {
     linkedin_url?: NullableStringFieldUpdateOperationsInput | string | null
     resume_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_profile_public?: BoolFieldUpdateOperationsInput | boolean
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
+    clearanceStatus?: EnumClearanceStatusFieldUpdateOperationsInput | $Enums.ClearanceStatus
+    clearanceRemarks?: NullableStringFieldUpdateOperationsInput | string | null
+    clearanceToken?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedById?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     job_applications?: JobApplicationUncheckedUpdateManyWithoutAlumniNestedInput
@@ -21216,6 +21589,7 @@ export namespace Prisma {
 
   export type AlumniCreateWithoutJob_applicationsInput = {
     student_id?: string | null
+    studentIdNumber?: string | null
     course: string
     major?: string | null
     batch_year: number
@@ -21226,6 +21600,13 @@ export namespace Prisma {
     linkedin_url?: string | null
     resume_url?: string | null
     is_profile_public?: boolean
+    profileCompleteness?: number
+    clearanceStatus?: $Enums.ClearanceStatus
+    clearanceRemarks?: string | null
+    clearanceToken?: string | null
+    submittedAt?: Date | string | null
+    clearedAt?: Date | string | null
+    clearedById?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     profile: ProfileCreateNestedOneWithoutAlumniInput
@@ -21235,6 +21616,7 @@ export namespace Prisma {
   export type AlumniUncheckedCreateWithoutJob_applicationsInput = {
     id: string
     student_id?: string | null
+    studentIdNumber?: string | null
     course: string
     major?: string | null
     batch_year: number
@@ -21245,6 +21627,13 @@ export namespace Prisma {
     linkedin_url?: string | null
     resume_url?: string | null
     is_profile_public?: boolean
+    profileCompleteness?: number
+    clearanceStatus?: $Enums.ClearanceStatus
+    clearanceRemarks?: string | null
+    clearanceToken?: string | null
+    submittedAt?: Date | string | null
+    clearedAt?: Date | string | null
+    clearedById?: string | null
     created_at?: Date | string
     updated_at?: Date | string
     career_records?: CareerRecordUncheckedCreateNestedManyWithoutAlumniInput
@@ -21321,6 +21710,7 @@ export namespace Prisma {
 
   export type AlumniUpdateWithoutJob_applicationsInput = {
     student_id?: NullableStringFieldUpdateOperationsInput | string | null
+    studentIdNumber?: NullableStringFieldUpdateOperationsInput | string | null
     course?: StringFieldUpdateOperationsInput | string
     major?: NullableStringFieldUpdateOperationsInput | string | null
     batch_year?: IntFieldUpdateOperationsInput | number
@@ -21331,6 +21721,13 @@ export namespace Prisma {
     linkedin_url?: NullableStringFieldUpdateOperationsInput | string | null
     resume_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_profile_public?: BoolFieldUpdateOperationsInput | boolean
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
+    clearanceStatus?: EnumClearanceStatusFieldUpdateOperationsInput | $Enums.ClearanceStatus
+    clearanceRemarks?: NullableStringFieldUpdateOperationsInput | string | null
+    clearanceToken?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedById?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     profile?: ProfileUpdateOneRequiredWithoutAlumniNestedInput
@@ -21340,6 +21737,7 @@ export namespace Prisma {
   export type AlumniUncheckedUpdateWithoutJob_applicationsInput = {
     id?: StringFieldUpdateOperationsInput | string
     student_id?: NullableStringFieldUpdateOperationsInput | string | null
+    studentIdNumber?: NullableStringFieldUpdateOperationsInput | string | null
     course?: StringFieldUpdateOperationsInput | string
     major?: NullableStringFieldUpdateOperationsInput | string | null
     batch_year?: IntFieldUpdateOperationsInput | number
@@ -21350,6 +21748,13 @@ export namespace Prisma {
     linkedin_url?: NullableStringFieldUpdateOperationsInput | string | null
     resume_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_profile_public?: BoolFieldUpdateOperationsInput | boolean
+    profileCompleteness?: IntFieldUpdateOperationsInput | number
+    clearanceStatus?: EnumClearanceStatusFieldUpdateOperationsInput | $Enums.ClearanceStatus
+    clearanceRemarks?: NullableStringFieldUpdateOperationsInput | string | null
+    clearanceToken?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clearedById?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     career_records?: CareerRecordUncheckedUpdateManyWithoutAlumniNestedInput

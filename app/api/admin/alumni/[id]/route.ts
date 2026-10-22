@@ -4,6 +4,41 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { logAudit, AUDIT_ACTIONS } from "@/lib/utils/audit";
 import { prisma } from "@/lib/prisma";
 
+// GET /api/admin/alumni/[id] — get single alumni details
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const supabase = await createClient();
+
+    const { data: { user }, error: authErr } = await supabase.auth.getUser();
+    if (authErr || !user) return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single<{ role: string }>();
+    if (profile?.role !== "admin") return Response.json({ error: "Forbidden" }, { status: 403 });
+
+    const alumni = await prisma.alumni.findUnique({
+      where: { id },
+      include: {
+        profile: true,
+        career_records: {
+          where: { is_archived: false },
+          orderBy: { created_at: "desc" },
+        },
+      },
+    });
+
+    if (!alumni) return Response.json({ error: "Alumni not found" }, { status: 404 });
+
+    return Response.json({ data: alumni });
+  } catch (error) {
+    console.error("[GET /api/admin/alumni/[id]]", error);
+    return Response.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
 // DELETE /api/admin/alumni/[id] — archive alumni account (soft delete)
 export async function DELETE(
   request: NextRequest,

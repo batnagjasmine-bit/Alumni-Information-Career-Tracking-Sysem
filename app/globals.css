@@ -264,3 +264,17 @@
   .tiptap-editor .ProseMirror pre { @apply bg-muted rounded p-4 font-mono text-xs overflow-x-auto my-3; }
   .tiptap-editor .ProseMirror a { @apply text-primary underline underline-offset-2; }
 }
+
+/* Print optimization */
+@media print {
+  @page {
+    size: auto;
+    margin: 10mm;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

@@ -139,6 +139,7 @@ exports.Prisma.ProfileScalarFieldEnum = {
 exports.Prisma.AlumniScalarFieldEnum = {
   id: 'id',
   student_id: 'student_id',
+  studentIdNumber: 'studentIdNumber',
   course: 'course',
   major: 'major',
   batch_year: 'batch_year',
@@ -149,6 +150,13 @@ exports.Prisma.AlumniScalarFieldEnum = {
   linkedin_url: 'linkedin_url',
   resume_url: 'resume_url',
   is_profile_public: 'is_profile_public',
+  profileCompleteness: 'profileCompleteness',
+  clearanceStatus: 'clearanceStatus',
+  clearanceRemarks: 'clearanceRemarks',
+  clearanceToken: 'clearanceToken',
+  submittedAt: 'submittedAt',
+  clearedAt: 'clearedAt',
+  clearedById: 'clearedById',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -307,7 +315,12 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
-
+exports.ClearanceStatus = exports.$Enums.ClearanceStatus = {
+  PENDING: 'PENDING',
+  SUBMITTED: 'SUBMITTED',
+  CLEARED: 'CLEARED',
+  REJECTED: 'REJECTED'
+};
 
 exports.Prisma.ModelName = {
   Profile: 'Profile',

@@ -44,6 +44,7 @@ export type Database = {
         Row: {
           id: string;
           student_id: string | null;
+          studentIdNumber: string | null;
           course: string;
           major: string | null;
           batch_year: number;
@@ -53,12 +54,20 @@ export type Database = {
           province: string | null;
           linkedin_url: string | null;
           is_profile_public: boolean;
+          profileCompleteness: number;
+          clearanceStatus: "PENDING" | "SUBMITTED" | "CLEARED" | "REJECTED";
+          clearanceRemarks: string | null;
+          clearanceToken: string | null;
+          submittedAt: string | null;
+          clearedAt: string | null;
+          clearedById: string | null;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id: string;
           student_id?: string | null;
+          studentIdNumber?: string | null;
           course: string;
           major?: string | null;
           batch_year: number;
@@ -68,6 +77,13 @@ export type Database = {
           province?: string | null;
           linkedin_url?: string | null;
           is_profile_public?: boolean;
+          profileCompleteness?: number;
+          clearanceStatus?: "PENDING" | "SUBMITTED" | "CLEARED" | "REJECTED";
+          clearanceRemarks?: string | null;
+          clearanceToken?: string | null;
+          submittedAt?: string | null;
+          clearedAt?: string | null;
+          clearedById?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -303,7 +319,9 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
-    Enums: Record<string, never>;
+    Enums: {
+      ClearanceStatus: "PENDING" | "SUBMITTED" | "CLEARED" | "REJECTED";
+    };
     CompositeTypes: Record<string, never>;
   };
   graphql_public?: Record<string, never>;

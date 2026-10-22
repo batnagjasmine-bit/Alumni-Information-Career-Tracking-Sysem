@@ -22,6 +22,7 @@ export const alumniRegisterSchema = z
     password: passwordSchema,
     confirm_password: z.string().min(1, "Please confirm your password"),
     student_id: z.string().optional(),
+    studentIdNumber: z.string().optional(),
     course: z.enum([...PCLU_COURSES] as [string, ...string[]], {
       message: "Please select a valid course",
     }),

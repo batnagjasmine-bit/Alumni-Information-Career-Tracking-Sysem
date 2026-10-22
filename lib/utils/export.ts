@@ -26,6 +26,26 @@ export function exportToExcel(
   XLSX.writeFile(workbook, `${filename}.xlsx`);
 }
 
+// ── CSV Export ────────────────────────────────────────────────────────────────
+
+export function exportToCSV(
+  data: Record<string, unknown>[],
+  filename: string
+): void {
+  if (!data || data.length === 0) return;
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const csvOutput = XLSX.utils.sheet_to_csv(worksheet);
+  const blob = new Blob([csvOutput], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", `${filename}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 // ── PDF Export ────────────────────────────────────────────────────────────────
 
 export async function exportToPDF(

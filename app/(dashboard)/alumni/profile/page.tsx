@@ -3,13 +3,17 @@
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User, Camera, Loader2, Save, Globe, Phone, MapPin, Link2, Eye, EyeOff, GraduationCap } from "lucide-react";
+import { User, Camera, Loader2, Save, Globe, Phone, MapPin, Link2, Eye, EyeOff, GraduationCap, ShieldCheck, FileWarning, AlertTriangle, Award } from "lucide-react";
+import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { alumniProfileSchema, type AlumniProfileInput } from "@/lib/validations/alumni.schema";
 import { PCLU_COURSES } from "@/lib/constants/courses";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { StatusBadge } from "@/components/shared/StatusBadge";
+import { Progress, ProgressTrack, ProgressIndicator } from "@/components/ui/progress";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,13 +22,22 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatInitials } from "@/lib/utils/format";
 
 interface ProfileData {
-  id: string; full_name: string; email: string; phone?: string;
-  profile_photo_url?: string; cover_photo_url?: string; is_verified: boolean;
-  student_id?: string; course?: string; major?: string;
-  batch_year?: number; graduation_year?: number;
-  address?: string; city?: string; province?: string;
-  linkedin_url?: string; is_profile_public: boolean;
-  resume_url?: string;
+  id: string; full_name: string; email: string; phone?: string | null;
+  profile_photo_url?: string | null; cover_photo_url?: string | null; is_verified: boolean;
+  student_id?: string | null; studentIdNumber?: string | null; course?: string | null; major?: string | null;
+  batch_year?: number | null; graduation_year?: number | null;
+  address?: string | null; city?: string | null; province?: string | null;
+  linkedin_url?: string | null; is_profile_public: boolean;
+  resume_url?: string | null;
+  clearanceStatus?: string | null;
+  profileCompleteness?: number;
+  clearanceRemarks?: string | null;
+  clearanceToken?: string | null;
+  submittedAt?: string | null;
+  clearedAt?: string | null;
+  clearedById?: string | null;
+  missingFields?: string[];
+  isComplete?: boolean;
 }
 
 export default function AlumniProfilePage() {
@@ -43,7 +56,7 @@ export default function AlumniProfilePage() {
   const form = useForm<AlumniProfileInput, any, AlumniProfileInput>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(alumniProfileSchema) as any,
-    defaultValues: { full_name: "", phone: "", address: "", city: "", province: "", linkedin_url: "", major: "", is_profile_public: true },
+    defaultValues: { full_name: "", phone: "", studentIdNumber: "", student_id: "", address: "", city: "", province: "", linkedin_url: "", major: "", is_profile_public: true },
   });
 
   useEffect(() => {
@@ -55,6 +68,8 @@ export default function AlumniProfilePage() {
           form.reset({
             full_name: data.full_name ?? "",
             phone: data.phone ?? "",
+            student_id: data.student_id ?? "",
+            studentIdNumber: data.studentIdNumber || data.student_id || "",
             address: data.address ?? "",
             city: data.city ?? "",
             province: data.province ?? "",
@@ -190,7 +205,17 @@ export default function AlumniProfilePage() {
     const json = await res.json();
     if (!res.ok) { toast.error(json.error ?? "Failed to save"); return; }
     toast.success("Profile saved successfully!");
-    setProfile(prev => prev ? { ...prev, ...data } : prev);
+    
+    // Refresh full profile data from API to get updated completeness, gatekeeper status & missing fields
+    try {
+      const freshRes = await fetch("/api/alumni/profile");
+      const freshJson = await freshRes.json();
+      if (freshJson.data) {
+        setProfile(freshJson.data);
+      }
+    } catch {
+      setProfile(prev => prev ? { ...prev, ...data } : prev);
+    }
   };
 
   if (loading) {
@@ -213,6 +238,146 @@ export default function AlumniProfilePage() {
           {form.formState.isSubmitting ? <><Loader2 size={14} className="animate-spin mr-1.5" />Saving…</> : <><Save size={14} className="mr-1.5" />Save Changes</>}
         </Button>
       </PageHeader>
+
+      {/* Graduation Clearance Status Banner */}
+      <div
+        className={`rounded-2xl border p-6 transition-all shadow-sm ${
+          profile?.clearanceStatus === "CLEARED"
+            ? "bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-card border-emerald-500/30"
+            : profile?.clearanceStatus === "SUBMITTED"
+            ? "bg-gradient-to-r from-sky-500/10 via-blue-500/5 to-card border-sky-500/30"
+            : profile?.clearanceStatus === "REJECTED"
+            ? "bg-gradient-to-r from-red-500/10 via-amber-500/5 to-card border-red-500/30"
+            : "bg-gradient-to-r from-amber-500/10 via-primary/5 to-card border-amber-500/30"
+        }`}
+      >
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border/60">
+          <div className="flex items-start sm:items-center gap-3.5">
+            <div
+              className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-sm ${
+                profile?.clearanceStatus === "CLEARED"
+                  ? "bg-emerald-500/20 text-emerald-500 ring-2 ring-emerald-500/30"
+                  : profile?.clearanceStatus === "SUBMITTED"
+                  ? "bg-sky-500/20 text-sky-500"
+                  : profile?.clearanceStatus === "REJECTED"
+                  ? "bg-red-500/20 text-red-500"
+                  : "bg-amber-500/20 text-amber-500"
+              }`}
+            >
+              {profile?.clearanceStatus === "CLEARED" ? (
+                <ShieldCheck size={26} />
+              ) : profile?.clearanceStatus === "SUBMITTED" ? (
+                <Award size={26} />
+              ) : profile?.clearanceStatus === "REJECTED" ? (
+                <FileWarning size={26} />
+              ) : (
+                <GraduationCap size={26} />
+              )}
+            </div>
+            <div>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <h2 className="font-heading text-lg font-bold text-foreground">
+                  Pre-Graduation Clearance Status
+                </h2>
+                <StatusBadge status={profile?.clearanceStatus || "PENDING"} />
+              </div>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+                {profile?.clearanceStatus === "CLEARED" &&
+                  "Congratulations! Your graduation clearance has been verified by the Registrar."}
+                {profile?.clearanceStatus === "SUBMITTED" &&
+                  "Your 100% profile submission is under review by the Alumni Coordinator / Registrar."}
+                {profile?.clearanceStatus === "REJECTED" &&
+                  "Your clearance submission requires revision before it can be approved."}
+                {(!profile?.clearanceStatus || profile?.clearanceStatus === "PENDING") &&
+                  "100% profile & career form completion is mandatory to submit for graduation clearance."}
+              </p>
+            </div>
+          </div>
+
+          {/* If CLEARED, unlock and display View & Print Clearance Slip button */}
+          {profile?.clearanceStatus === "CLEARED" && (
+            <div className="flex items-center gap-2 shrink-0">
+              <Button
+                onClick={() => router.push("/alumni/clearance")}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold shadow-md flex items-center gap-2"
+              >
+                <Award size={16} />
+                View & Print Clearance Slip
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* If REJECTED, display clearanceRemarks in destructive alert box */}
+        {profile?.clearanceStatus === "REJECTED" && (
+          <div className="mt-4">
+            <Alert variant="destructive" className="border-red-500/40 bg-red-500/10 text-red-300">
+              <FileWarning className="h-5 w-5 text-red-400" />
+              <div className="ml-2">
+                <AlertTitle className="text-red-400 font-bold">Clearance Action Required</AlertTitle>
+                <AlertDescription className="text-red-200 mt-1">
+                  Coordinator Remarks:{" "}
+                  <span className="font-semibold text-white">
+                    {profile.clearanceRemarks || "Please complete any missing graduation fields and update your profile."}
+                  </span>
+                </AlertDescription>
+              </div>
+            </Alert>
+          </div>
+        )}
+
+        {/* Progress Bar & Completeness */}
+        <div className="mt-4 space-y-2">
+          <div className="flex items-center justify-between text-xs sm:text-sm">
+            <span className="font-medium text-foreground">Clearance Form Completeness</span>
+            <span className="font-bold text-primary tabular-nums">
+              {profile?.profileCompleteness ?? 0}%
+            </span>
+          </div>
+          <Progress value={profile?.profileCompleteness ?? 0} className="h-2.5">
+            <ProgressTrack className="h-2.5 rounded-full bg-muted">
+              <ProgressIndicator
+                className={`h-full rounded-full transition-all ${
+                  (profile?.profileCompleteness ?? 0) === 100
+                    ? "bg-emerald-500"
+                    : "bg-primary"
+                }`}
+              />
+            </ProgressTrack>
+          </Progress>
+        </div>
+
+        {/* Missing Fields Checklist */}
+        {profile?.missingFields && profile.missingFields.length > 0 && (
+          <div className="mt-4 pt-4 border-t border-border/60 space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <AlertTriangle size={14} className="text-amber-500" />
+              Missing Graduation Clearance Items ({profile.missingFields.length} remaining):
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+              {profile.missingFields.map((field) => (
+                <div
+                  key={field}
+                  className="flex items-center justify-between px-3 py-2 rounded-lg bg-muted/40 border border-border text-xs"
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                    <span className="capitalize font-medium text-foreground truncate">{field}</span>
+                  </div>
+                  {field.includes("employment") || field.includes("career") ? (
+                    <Link
+                      href="/alumni/career"
+                      className="text-[10px] text-primary hover:underline font-semibold shrink-0 ml-1"
+                    >
+                      Add &rarr;
+                    </Link>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Photo Card */}
@@ -262,7 +427,9 @@ export default function AlumniProfilePage() {
           {/* Academic info (read-only) */}
           <div className="w-full space-y-2 pt-2 border-t border-border">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Academic Info</p>
-            {profile?.student_id && <p className="text-xs text-muted-foreground">ID: {profile.student_id}</p>}
+            {(profile?.studentIdNumber || profile?.student_id) && (
+              <p className="text-xs text-muted-foreground">ID: {profile.studentIdNumber || profile.student_id}</p>
+            )}
             <p className="text-xs text-muted-foreground flex items-center gap-1.5"><GraduationCap size={12} />{profile?.course ?? "—"}</p>
             {profile?.batch_year && <p className="text-xs text-muted-foreground">Batch: {profile.batch_year}</p>}
             {profile?.graduation_year && <p className="text-xs text-muted-foreground">Graduated: {profile.graduation_year}</p>}
@@ -388,6 +555,25 @@ export default function AlumniProfilePage() {
                   <h3 className="font-semibold text-sm text-foreground">Academic & Privacy</h3>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField control={form.control} name="studentIdNumber" render={({ field }) => (
+                    <FormItem className="sm:col-span-2">
+                      <FormLabel>
+                        Student ID Number <span className="text-primary text-xs font-normal">(Required for 100% Clearance)</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          value={field.value ?? ""}
+                          placeholder="e.g. 2020-00123"
+                          onChange={(e) => {
+                            field.onChange(e);
+                            form.setValue("student_id", e.target.value);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
                   <FormField control={form.control} name="major" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Major / Specialization</FormLabel>

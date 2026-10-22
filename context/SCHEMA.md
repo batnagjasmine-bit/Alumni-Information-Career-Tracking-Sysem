@@ -59,6 +59,14 @@ Extends `profiles` for alumni role users.
 | `linkedin_url` | `TEXT` | NULLABLE | Professional networking profile |
 | `resume_url` | `TEXT` | NULLABLE | Supabase storage link to PDF resume |
 | `is_profile_public` | `BOOLEAN` | DEFAULT `true` | Directory public visibility flag |
+| `studentIdNumber` | `VARCHAR` | UNIQUE, NULLABLE | PCLU Student Identification Number for clearance |
+| `profileCompleteness` | `INT` | DEFAULT `0` | Profile completeness percentage (0-100) |
+| `clearanceStatus` | `ClearanceStatus` | DEFAULT `'PENDING'` | Pre-graduation status: `'PENDING' \| 'SUBMITTED' \| 'CLEARED' \| 'REJECTED'` |
+| `clearanceRemarks` | `TEXT` | NULLABLE | Feedback or reasons for rejection / clearance notes |
+| `clearanceToken` | `VARCHAR` | UNIQUE, NULLABLE | Unique digital token for verified clearance certificate |
+| `submittedAt` | `TIMESTAMPTZ` | NULLABLE | Timestamp when clearance application was submitted |
+| `clearedAt` | `TIMESTAMPTZ` | NULLABLE | Timestamp when clearance was approved |
+| `clearedById` | `UUID` | FK `profiles.id`, NULLABLE | Admin who approved clearance |
 
 ---
 

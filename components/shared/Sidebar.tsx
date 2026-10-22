@@ -19,6 +19,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 const ALUMNI_MENU = [
   { href: "/alumni/career", icon: Briefcase, label: "Career History" },
   { href: "/alumni/jobs", icon: FileText, label: "Job Board" },
+  { href: "/alumni/clearance", icon: Award, label: "Clearance Slip" },
   { href: "/alumni/announcements", icon: Megaphone, label: "Announcements" },
 ];
 

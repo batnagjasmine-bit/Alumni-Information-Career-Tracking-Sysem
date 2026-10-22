@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Loader2, CheckCircle } from "lucide-react";
+import { Eye, EyeOff, Loader2, CheckCircle, GraduationCap } from "lucide-react";
 import { toast } from "sonner";
 import { alumniRegisterSchema } from "@/lib/validations/auth.schema";
 import { PCLU_COURSES, BATCH_YEARS, GRADUATION_YEARS } from "@/lib/constants/courses";
@@ -36,7 +36,7 @@ export function AlumniRegisterForm() {
 
   const form = useForm<ClientInput>({
     resolver: zodResolver(clientSchema) as any,
-    defaultValues: { full_name: "", email: "", password: "", confirm_password: "", student_id: "", course: undefined, batch_year: "", graduation_year: "" } as any,
+    defaultValues: { full_name: "", email: "", password: "", confirm_password: "", studentIdNumber: "", student_id: "", course: undefined, batch_year: "", graduation_year: "" } as any,
   });
 
   const onSubmit = async (data: ClientInput) => {
@@ -77,6 +77,17 @@ export function AlumniRegisterForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
         {error && <div className="rounded-lg bg-red-500/10 border border-red-500/30 px-4 py-3 text-red-300 text-sm">{error}</div>}
+
+        {/* Pre-Graduation Clearance Onboarding Callout */}
+        <div className="rounded-xl bg-gradient-to-r from-pclu-sky-500/15 via-blue-500/10 to-transparent border border-pclu-sky-500/30 p-4 space-y-1.5">
+          <div className="flex items-center gap-2 text-pclu-sky-300 font-semibold text-sm">
+            <GraduationCap className="h-4 w-4 text-pclu-sky-400 shrink-0" />
+            <span>Graduation Clearance Notice</span>
+          </div>
+          <p className="text-slate-300 text-xs leading-relaxed">
+            Graduating students: <span className="text-white font-medium">100% profile & career form completion</span> (including Student ID Number, contact details, address, and current career status) is required to obtain your verified <span className="text-pclu-sky-300 font-medium">Graduation Clearance Slip</span>.
+          </p>
+        </div>
 
         {/* Section 1: Account */}
         <div className="space-y-1 pb-1">
@@ -202,11 +213,25 @@ export function AlumniRegisterForm() {
           <div className="h-px bg-white/10" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FormField control={control} name="student_id" render={({ field }) => (
+          <FormField control={control} name="studentIdNumber" render={({ field }) => (
             <FormItem>
-              <FormLabel className={labelCls}>Student ID <span className="text-slate-500">(optional)</span></FormLabel>
-              <FormControl><Input {...field} id="alumni-student-id" placeholder="e.g. 2019-12345" className={inputCls} /></FormControl>
+              <FormLabel className={labelCls}>
+                Student ID Number <span className="text-pclu-sky-400 text-xs font-normal">(Required for Clearance)</span>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  id="alumni-student-id-number"
+                  placeholder="e.g. 2020-00123"
+                  className={inputCls}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    form.setValue("student_id", e.target.value);
+                  }}
+                />
+              </FormControl>
               <FormMessage className="text-red-300 text-xs" />
+              <p className="text-[11px] text-slate-400">Official University Student ID number.</p>
             </FormItem>
           )} />
           <FormField control={control} name="course" render={({ field }) => (
